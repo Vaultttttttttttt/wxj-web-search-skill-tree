@@ -1,0 +1,19 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "local-vllm": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "local-vllm",
+      "options": {
+        "baseURL": "YOUR_OPENAI_COMPATIBLE_BASE_URL",
+        "apiKey": "YOUR_OPENAI_COMPATIBLE_API_KEY"
+      },
+      "models": {
+        "Kimi-K25": {
+          "name": "Kimi-K2.5"
+        }
+      }
+    }
+  },
+  "mcp": {}
+}

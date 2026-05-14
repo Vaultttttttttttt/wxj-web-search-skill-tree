@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ROMA Web Search API Test UI</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --text: #1c2430;
+      --muted: #667085;
+      --line: #d7dce3;
+      --accent: #1769aa;
+      --accent-strong: #0d4f87;
+      --good: #0b7a4b;
+      --warn: #a15c00;
+      --bad: #b42318;
+      --code: #111827;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 72px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 720;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    main {
+      padding: 24px 0 36px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      color: #344054;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 9px 10px;
+      color: var(--text);
+      background: #fff;
+      font: inherit;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 124px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(23, 105, 170, 0.12);
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button {
+      min-height: 38px;
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      background: var(--accent);
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #fff;
+      color: var(--accent);
+    }
+
+    button:disabled {
+      cursor: wait;
+      opacity: 0.62;
+    }
+
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border-radius: 999px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .badge.good {
+      border-color: rgba(11, 122, 75, 0.25);
+      background: rgba(11, 122, 75, 0.08);
+      color: var(--good);
+    }
+
+    .badge.warn {
+      border-color: rgba(161, 92, 0, 0.25);
+      background: rgba(161, 92, 0, 0.08);
+      color: var(--warn);
+    }
+
+    .badge.bad {
+      border-color: rgba(180, 35, 24, 0.25);
+      background: rgba(180, 35, 24, 0.08);
+      color: var(--bad);
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px;
+      background: #fbfcfd;
+    }
+
+    .metric .k {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .metric .v {
+      margin-top: 4px;
+      font-size: 17px;
+      font-weight: 760;
+      overflow-wrap: anywhere;
+    }
+
+    pre {
+      overflow: auto;
+      max-height: 540px;
+      margin: 0;
+      border-radius: 8px;
+      padding: 14px;
+      background: var(--code);
+      color: #d8dee9;
+      font-size: 13px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .log {
+      min-height: 240px;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    .task-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .task-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      width: 100%;
+      min-height: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fbfcfd;
+      color: var(--text);
+      text-align: left;
+      font-weight: 500;
+    }
+
+    .task-item:hover,
+    .task-item.selected {
+      border-color: var(--accent);
+      background: rgba(23, 105, 170, 0.06);
+    }
+
+    .task-main {
+      min-width: 0;
+    }
+
+    .task-id {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      font-weight: 750;
+      overflow-wrap: anywhere;
+    }
+
+    .task-query {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .task-side {
+      display: grid;
+      gap: 4px;
+      justify-items: end;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 900px) {
+      .layout,
+      .result-grid,
+      .grid2,
+      .actions {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 16px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap topbar">
+      <div>
+        <h1>ROMA Web Search API Test UI</h1>
+        <div class="subtitle">同源测试页：健康检查、同步、流式、异步任务轮询</div>
+      </div>
+      <span id="serverBadge" class="badge">未检查服务</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="layout">
+      <section>
+        <h2>请求参数</h2>
+
+        <label for="baseUrl">Base URL</label>
+        <input id="baseUrl" value="">
+
+        <label for="apiKey">API Key</label>
+        <input id="apiKey" value="sk-your-api-key">
+
+        <label for="query">查询问题</label>
+        <textarea id="query">检索中国土地财政 2021 年土地出让收入 房产税改革 官方数据</textarea>
+
+        <div class="grid2">
+          <div>
+            <label for="topN">top_n</label>
+            <input id="topN" type="number" min="1" max="200" value="5">
+          </div>
+          <div>
+            <label for="taskId">异步 task_id</label>
+            <input id="taskId" placeholder="创建任务后自动填入">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="healthBtn" class="secondary">健康检查</button>
+          <button id="syncBtn">同步请求</button>
+          <button id="streamBtn" class="secondary">流式请求</button>
+          <button id="asyncBtn">创建异步任务</button>
+          <button id="pollBtn" class="secondary">查询任务</button>
+          <button id="pollAllBtn" class="secondary">查询全部任务</button>
+          <button id="autoPollBtn" class="secondary">自动轮询</button>
+        </div>
+
+        <label>异步任务列表</label>
+        <div id="taskList" class="task-list">
+          <div class="note">还没有创建任务。</div>
+        </div>
+
+        <div class="note">
+          如果通过 <code>/test-ui</code> 打开，本页面与 API 同源，不需要额外配置 CORS。
+        </div>
+      </section>
+
+      <section>
+        <h2>测试结果</h2>
+        <div class="status-row">
+          <span id="authBadge" class="badge">鉴权未测</span>
+          <span id="syncBadge" class="badge">同步未测</span>
+          <span id="streamBadge" class="badge">流式未测</span>
+          <span id="asyncBadge" class="badge">异步未测</span>
+        </div>
+
+        <div class="result-grid">
+          <div class="metric">
+            <div class="k">HTTP / 状态</div>
+            <div id="statusValue" class="v">-</div>
+          </div>
+          <div class="metric">
+            <div class="k">结果数量</div>
+            <div id="countValue" class="v">-</div>
+          </div>
+          <div class="metric">
+            <div class="k">耗时</div>
+            <div id="durationValue" class="v">-</div>
+          </div>
+        </div>
+
+        <pre id="output" class="log">点击左侧按钮开始测试。</pre>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let pollingTimer = null;
+    const taskRecords = new Map();
+
+    $("baseUrl").value = window.location.origin || "http://127.0.0.1:8099";
+
+    function apiBase() {
+      return $("baseUrl").value.replace(/\/$/, "");
+    }
+
+    function headers() {
+      return {
+        "Authorization": `Bearer ${$("apiKey").value.trim()}`,
+        "Content-Type": "application/json",
+      };
+    }
+
+    function payload(stream = false) {
+      const body = {
+        model: "roma-web-search",
+        messages: [{ role: "user", content: $("query").value.trim() }],
+        top_n: Number($("topN").value || 5),
+        stream,
+      };
+      if (stream) {
+        body.stream_chunk_chars = 24;
+        body.stream_chunk_delay_ms = 120;
+      }
+      return body;
+    }
+
+    function setBadge(id, text, type = "") {
+      const node = $(id);
+      node.textContent = text;
+      node.className = `badge ${type}`.trim();
+    }
+
+    function setMetrics(status, count = "-", duration = "-") {
+      $("statusValue").textContent = status;
+      $("countValue").textContent = String(count);
+      $("durationValue").textContent = String(duration);
+    }
+
+    function writeOutput(value) {
+      if (typeof value === "string") {
+        $("output").textContent = value;
+        $("output").scrollTop = $("output").scrollHeight;
+        return;
+      }
+      $("output").textContent = JSON.stringify(value, null, 2);
+      $("output").scrollTop = $("output").scrollHeight;
+    }
+
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function shortTaskId(taskId) {
+      return taskId ? `${taskId.slice(0, 8)}...${taskId.slice(-6)}` : "-";
+    }
+
+    function badgeTypeForStatus(status) {
+      if (status === "completed") return "good";
+      if (status === "failed") return "bad";
+      if (status === "running" || status === "pending") return "warn";
+      return "";
+    }
+
+    function rememberTask(data, fallbackQuestion = "") {
+      if (!data?.task_id) return;
+      const previous = taskRecords.get(data.task_id) || {};
+      taskRecords.set(data.task_id, {
+        task_id: data.task_id,
+        status: data.status || previous.status || "unknown",
+        created_at: data.created_at || previous.created_at || "",
+        updated_at: data.updated_at || previous.updated_at || "",
+        question: data.session?.question || previous.question || fallbackQuestion || $("query").value.trim(),
+        result_count: data.statistics?.result_count ?? previous.result_count ?? "-",
+        duration_ms: data.statistics?.duration_ms ?? previous.duration_ms ?? "-",
+        artifact_markdown_path: data.result?.artifact_markdown_path || previous.artifact_markdown_path || "",
+        artifact_json_path: data.result?.artifact_json_path || previous.artifact_json_path || "",
+      });
+      renderTaskList();
+    }
+
+    function renderTaskList() {
+      const selected = $("taskId").value.trim();
+      const records = Array.from(taskRecords.values()).reverse();
+      if (!records.length) {
+        $("taskList").innerHTML = '<div class="note">还没有创建任务。</div>';
+        return;
+      }
+
+      $("taskList").innerHTML = records.map((record) => {
+        const statusType = badgeTypeForStatus(record.status);
+        const active = record.task_id === selected ? " selected" : "";
+        const count = record.result_count === "-" ? "-" : `${record.result_count} 条`;
+        const duration = record.duration_ms === "-" ? "-" : `${record.duration_ms} ms`;
+        return `
+          <button type="button" class="task-item${active}" data-task-id="${escapeHtml(record.task_id)}">
+            <span class="task-main">
+              <span class="task-id">${escapeHtml(shortTaskId(record.task_id))}</span>
+              <span class="task-query">${escapeHtml(record.question || "(无查询文本)")}</span>
+            </span>
+            <span class="task-side">
+              <span class="badge ${statusType}">${escapeHtml(record.status)}</span>
+              <span>${escapeHtml(count)} / ${escapeHtml(duration)}</span>
+            </span>
+          </button>
+        `;
+      }).join("");
+    }
+
+    function setBusy(isBusy) {
+      for (const btn of document.querySelectorAll("button")) {
+        btn.disabled = isBusy;
+      }
+    }
+
+    async function readJsonResponse(resp) {
+      const text = await resp.text();
+      try {
+        return JSON.parse(text);
+      } catch {
+        return { raw: text };
+      }
+    }
+
+    async function healthCheck() {
+      setBusy(true);
+      try {
+        const resp = await fetch(`${apiBase()}/healthz`);
+        const data = await readJsonResponse(resp);
+        writeOutput(data);
+        setMetrics(resp.status, "-", "-");
+        setBadge("serverBadge", resp.ok ? "服务正常" : "服务异常", resp.ok ? "good" : "bad");
+      } catch (err) {
+        writeOutput(String(err));
+        setBadge("serverBadge", "服务不可达", "bad");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function syncRequest() {
+      setBusy(true);
+      const start = performance.now();
+      try {
+        const resp = await fetch(`${apiBase()}/web-search/v1/chat/completions`, {
+          method: "POST",
+          headers: headers(),
+          body: JSON.stringify(payload(false)),
+        });
+        const data = await readJsonResponse(resp);
+        const resultCount = data.roma_result?.contexts?.length ?? "-";
+        const duration = data.roma_result?.debug?.duration_ms ?? `${Math.round(performance.now() - start)} ms`;
+        writeOutput(data);
+        setMetrics(resp.status, resultCount, duration);
+        setBadge("authBadge", resp.status === 401 ? "鉴权失败" : "鉴权通过", resp.status === 401 ? "bad" : "good");
+        setBadge("syncBadge", resp.ok && data.choices ? "同步通过" : "同步失败", resp.ok && data.choices ? "good" : "bad");
+      } catch (err) {
+        writeOutput(String(err));
+        setBadge("syncBadge", "同步异常", "bad");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function streamRequest() {
+      setBusy(true);
+      const chunks = [];
+      const start = performance.now();
+      try {
+        const resp = await fetch(`${apiBase()}/web-search/v1/chat/completions`, {
+          method: "POST",
+          headers: headers(),
+          body: JSON.stringify(payload(true)),
+        });
+
+        if (!resp.ok || !resp.body) {
+          const data = await readJsonResponse(resp);
+          writeOutput(data);
+          setBadge("streamBadge", "流式失败", "bad");
+          setMetrics(resp.status, "-", `${Math.round(performance.now() - start)} ms`);
+          return;
+        }
+
+        setBadge("streamBadge", "SSE 已连接，检索中", "warn");
+        writeOutput("SSE 连接已建立，正在等待底层检索结果...\n\n收到正文 chunk 后会逐段追加在这里。");
+
+        const reader = resp.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+        let buffer = "";
+        let finalText = "";
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const events = buffer.split("\n\n");
+          buffer = events.pop() || "";
+
+          for (const event of events) {
+            const line = event.split("\n").find((item) => item.startsWith("data: "));
+            if (!line) continue;
+            const dataText = line.slice(6).trim();
+            if (dataText === "[DONE]") {
+              chunks.push("[DONE]");
+              continue;
+            }
+            const json = JSON.parse(dataText);
+            const piece = json.choices?.[0]?.delta?.content || "";
+            chunks.push(json);
+            if (!piece) {
+              if (!finalText) {
+                writeOutput(`SSE 已连接，已收到 ${chunks.length} 个控制 chunk。\n\n正在等待检索正文...`);
+              }
+              continue;
+            }
+            finalText += piece;
+            writeOutput(finalText);
+            await sleep(35);
+          }
+        }
+
+        setMetrics(resp.status, `${chunks.length} chunks`, `${Math.round(performance.now() - start)} ms`);
+        setBadge("streamBadge", chunks.length ? "流式通过" : "流式无内容", chunks.length ? "good" : "warn");
+      } catch (err) {
+        writeOutput(String(err));
+        setBadge("streamBadge", "流式异常", "bad");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function createTask() {
+      setBusy(true);
+      try {
+        const resp = await fetch(`${apiBase()}/web-search/v1/create_task`, {
+          method: "POST",
+          headers: headers(),
+          body: JSON.stringify(payload(false)),
+        });
+        const data = await readJsonResponse(resp);
+        if (data.data?.task_id) {
+          $("taskId").value = data.data.task_id;
+          rememberTask(data.data, $("query").value.trim());
+        }
+        writeOutput(data);
+        setMetrics(resp.status, data.data?.status || "-", "-");
+        setBadge("asyncBadge", resp.ok && data.data?.task_id ? "任务已创建" : "创建失败", resp.ok && data.data?.task_id ? "good" : "bad");
+      } catch (err) {
+        writeOutput(String(err));
+        setBadge("asyncBadge", "创建异常", "bad");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function pollOneTask(taskId, silent = false) {
+      if (!taskId) {
+        writeOutput("请先创建异步任务，或手动填入 task_id。");
+        setBadge("asyncBadge", "缺少 task_id", "warn");
+        return null;
+      }
+
+      if (!silent) setBusy(true);
+      try {
+        const url = new URL(`${apiBase()}/web-search/v1/query_task`);
+        url.searchParams.set("task_id", taskId);
+        const resp = await fetch(url, { headers: { "Authorization": `Bearer ${$("apiKey").value.trim()}` } });
+        const data = await readJsonResponse(resp);
+        const status = data.data?.status || resp.status;
+        const resultCount = data.data?.statistics?.result_count ?? "-";
+        const duration = data.data?.statistics?.duration_ms ?? "-";
+        if (data.data?.task_id) {
+          rememberTask(data.data);
+        }
+        writeOutput(data);
+        setMetrics(status, resultCount, duration);
+        setBadge("asyncBadge", status === "completed" ? "异步完成" : `异步 ${status}`, status === "failed" ? "bad" : status === "completed" ? "good" : "warn");
+        return data;
+      } catch (err) {
+        writeOutput(String(err));
+        setBadge("asyncBadge", "查询异常", "bad");
+        return null;
+      } finally {
+        if (!silent) setBusy(false);
+      }
+    }
+
+    async function pollTask(silent = false) {
+      let taskId = $("taskId").value.trim();
+      if (!taskId && taskRecords.size) {
+        taskId = Array.from(taskRecords.keys()).at(-1);
+        $("taskId").value = taskId;
+      }
+      return pollOneTask(taskId, silent);
+    }
+
+    async function pollAllTasks(silent = false) {
+      const ids = Array.from(taskRecords.keys());
+      if (!ids.length) {
+        return pollTask(silent);
+      }
+
+      if (!silent) setBusy(true);
+      try {
+        const results = [];
+        for (const taskId of ids) {
+          const data = await pollOneTask(taskId, true);
+          if (data) results.push(data.data || data);
+        }
+        writeOutput({
+          count: results.length,
+          tasks: results.map((item) => ({
+            task_id: item.task_id,
+            status: item.status,
+            result_count: item.statistics?.result_count ?? "-",
+            duration_ms: item.statistics?.duration_ms ?? "-",
+            artifact_markdown_path: item.result?.artifact_markdown_path || "",
+          })),
+        });
+        const done = results.filter((item) => item.status === "completed").length;
+        const failed = results.filter((item) => item.status === "failed").length;
+        setMetrics(`${done}/${results.length} completed`, `${failed} failed`, "-");
+        setBadge("asyncBadge", `已查询 ${results.length} 个任务`, failed ? "bad" : done === results.length ? "good" : "warn");
+        return results;
+      } finally {
+        if (!silent) setBusy(false);
+      }
+    }
+
+    async function autoPoll() {
+      if (pollingTimer) {
+        clearInterval(pollingTimer);
+        pollingTimer = null;
+        setBadge("asyncBadge", "已停止轮询", "warn");
+        return;
+      }
+
+      setBadge("asyncBadge", "自动轮询中", "warn");
+      pollingTimer = setInterval(async () => {
+        const results = await pollAllTasks(true);
+        const records = Array.isArray(results) ? results : [results?.data].filter(Boolean);
+        const allFinished = records.length > 0 && records.every((item) => item.status === "completed" || item.status === "failed");
+        if (allFinished) {
+          clearInterval(pollingTimer);
+          pollingTimer = null;
+        }
+      }, 2500);
+      await pollAllTasks(true);
+    }
+
+    $("taskList").addEventListener("click", (event) => {
+      const item = event.target.closest("[data-task-id]");
+      if (!item) return;
+      $("taskId").value = item.dataset.taskId;
+      renderTaskList();
+    });
+
+    $("healthBtn").addEventListener("click", healthCheck);
+    $("syncBtn").addEventListener("click", syncRequest);
+    $("streamBtn").addEventListener("click", streamRequest);
+    $("asyncBtn").addEventListener("click", createTask);
+    $("pollBtn").addEventListener("click", () => pollTask(false));
+    $("pollAllBtn").addEventListener("click", () => pollAllTasks(false));
+    $("autoPollBtn").addEventListener("click", autoPoll);
+
+    healthCheck();
+  </script>
+</body>
+</html>
