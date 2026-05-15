@@ -1,17 +1,17 @@
 # Image Search — Layer 3 叶子节点
 
-**脚本**：`/Users/wxj/Documents/skills测试/union-search-skill/scripts/union_image_search/multi_platform_image_search.py`
+**脚本**：`${WEB_SEARCH_UNION_ROOT:-../union-search-skill}/scripts/union_image_search/multi_platform_image_search.py`
 ⚡ **18个平台，无需 API Key，直接可用**
 
 ## 基础用法
 
 ```bash
 # 从所有18个平台批量搜索下载
-python /Users/wxj/Documents/skills测试/union-search-skill/scripts/union_image_search/multi_platform_image_search.py \
+python ${WEB_SEARCH_UNION_ROOT:-../union-search-skill}/scripts/union_image_search/multi_platform_image_search.py \
   --keyword "cats" --num 50
 
 # 指定平台搜索
-python /Users/wxj/Documents/skills测试/union-search-skill/scripts/union_image_search/multi_platform_image_search.py \
+python ${WEB_SEARCH_UNION_ROOT:-../union-search-skill}/scripts/union_image_search/multi_platform_image_search.py \
   --keyword "AI technology" \
   --platforms pixabay,unsplash,bing \
   --num 30

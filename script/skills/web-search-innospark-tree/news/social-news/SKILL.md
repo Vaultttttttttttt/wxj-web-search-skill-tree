@@ -1,12 +1,12 @@
 # Social News — Layer 3 叶子节点
 
-**脚本根目录**：`/Users/wxj/Documents/skills测试/news-aggregator-skill/`
+**脚本根目录**：`${WEB_SEARCH_NEWS_AGGREGATOR_ROOT:-../news-aggregator-skill}/`
 ⚡ **无需 API Key，开箱即用**
 
 ## 执行命令
 
 ```bash
-cd /Users/wxj/Documents/skills测试/news-aggregator-skill
+cd ${WEB_SEARCH_NEWS_AGGREGATOR_ROOT:-../news-aggregator-skill}
 
 # 微博热搜
 python3 scripts/fetch_news.py --source weibo --limit 10 --no-save

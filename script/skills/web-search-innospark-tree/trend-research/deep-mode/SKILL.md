@@ -1,6 +1,6 @@
 # Trend Research Deep Mode — Layer 3 叶子节点
 
-**执行脚本**：`/Users/wxj/Documents/skills测试/last30days-skill/scripts/last30days.py`
+**执行脚本**：`${LAST30DAYS_SKILL_ROOT:-../last30days-skill}/scripts/last30days.py`
 
 ## 功能
 深度研究某话题近30天的全平台社交媒体讨论，约5分钟出完整报告。
@@ -9,7 +9,7 @@
 ## 执行命令
 
 ```bash
-python3 /Users/wxj/Documents/skills测试/last30days-skill/scripts/last30days.py \
+python3 ${LAST30DAYS_SKILL_ROOT:-../last30days-skill}/scripts/last30days.py \
   "你的话题" --deep --emit=compact --no-native-web \
   --save-dir=~/Documents/Last30Days
 ```
@@ -18,15 +18,15 @@ python3 /Users/wxj/Documents/skills测试/last30days-skill/scripts/last30days.py
 
 ```bash
 # 深度研究 "LLM benchmarks" 近30天
-python3 /Users/wxj/Documents/skills测试/last30days-skill/scripts/last30days.py \
+python3 ${LAST30DAYS_SKILL_ROOT:-../last30days-skill}/scripts/last30days.py \
   "LLM benchmarks" --deep --emit=compact --no-native-web
 
 # 关注特定 Twitter 账号 + 话题
-python3 /Users/wxj/Documents/skills测试/last30days-skill/scripts/last30days.py \
+python3 ${LAST30DAYS_SKILL_ROOT:-../last30days-skill}/scripts/last30days.py \
   "Midjourney" --x-handle=midjourney --deep --emit=compact --no-native-web
 
 # Agent 模式（非交互，直接输出完整报告）
-python3 /Users/wxj/Documents/skills测试/last30days-skill/scripts/last30days.py \
+python3 ${LAST30DAYS_SKILL_ROOT:-../last30days-skill}/scripts/last30days.py \
   "AI video tools" --agent --deep --emit=compact --no-native-web
 ```
 

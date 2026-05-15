@@ -2,7 +2,7 @@
 
 ## 🧭 你在哪里
 `web-search-innospark-tree/trend-research/`
-工具来源：last30days (`/Users/wxj/Documents/skills测试/last30days-skill/`)
+工具来源：last30days (`${LAST30DAYS_SKILL_ROOT:-../last30days-skill}/`)
 
 ---
 

@@ -2,7 +2,7 @@
 
 ## 🧭 你在哪里
 `web-search-innospark-tree/news/`
-工具来源：News Aggregator (`/Users/wxj/Documents/skills测试/news-aggregator-skill/`)
+工具来源：News Aggregator (`${WEB_SEARCH_NEWS_AGGREGATOR_ROOT:-../news-aggregator-skill}/`)
 
 ---
 
@@ -33,10 +33,10 @@
 
 ```bash
 # 安装依赖
-pip install -r /Users/wxj/Documents/skills测试/news-aggregator-skill/requirements.txt
+pip install -r ${WEB_SEARCH_NEWS_AGGREGATOR_ROOT:-../news-aggregator-skill}/requirements.txt
 
 # 验证基础功能（HN，无需任何Key）
-cd /Users/wxj/Documents/skills测试/news-aggregator-skill
+cd ${WEB_SEARCH_NEWS_AGGREGATOR_ROOT:-../news-aggregator-skill}
 python3 scripts/fetch_news.py --source hackernews --limit 3 --no-save
 ```
 

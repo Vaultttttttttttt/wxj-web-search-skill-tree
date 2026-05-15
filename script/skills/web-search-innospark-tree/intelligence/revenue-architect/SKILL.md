@@ -1,6 +1,6 @@
 # Revenue Architect — Layer 3 叶子节点
 
-**执行脚本**：`/Users/wxj/Documents/skills测试/Intel_Briefing/run_revenue_architect.py`
+**执行脚本**：`${INTEL_BRIEFING_ROOT:-../Intel_Briefing}/run_revenue_architect.py`
 
 ## 功能
 读取当日简报内容，由 AI 从中提炼 5 类变现方向：
@@ -10,10 +10,10 @@ SaaS/工具、内容/社区、服务/咨询、开源商业化、数据/API。
 
 ```bash
 # 先生成日报（若当天尚未运行）
-cd /Users/wxj/Documents/skills测试/Intel_Briefing && python run_mission.py
+cd ${INTEL_BRIEFING_ROOT:-../Intel_Briefing} && python run_mission.py
 
 # 再运行变现分析
-cd /Users/wxj/Documents/skills测试/Intel_Briefing && python run_revenue_architect.py
+cd ${INTEL_BRIEFING_ROOT:-../Intel_Briefing} && python run_revenue_architect.py
 ```
 
 ## 依赖关系

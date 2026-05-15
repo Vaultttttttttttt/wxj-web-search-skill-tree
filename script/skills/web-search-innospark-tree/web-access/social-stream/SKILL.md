@@ -57,7 +57,7 @@ for e in f.entries[:10]:
 ### Union Search RSS 脚本
 
 ```bash
-python /Users/wxj/Documents/skills测试/union-search-skill/scripts/rss_search/rss_search.py \
+python ${WEB_SEARCH_UNION_ROOT:-../union-search-skill}/scripts/rss_search/rss_search.py \
   --url "https://hnrss.org/frontpage"
 ```
 

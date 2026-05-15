@@ -2,7 +2,7 @@
 
 ## 🧭 你在哪里
 `web-search-innospark-tree/intelligence/`
-工具来源：Intel Briefing (`/Users/wxj/Documents/skills测试/Intel_Briefing/`)
+工具来源：Intel Briefing (`${INTEL_BRIEFING_ROOT:-../Intel_Briefing}/`)
 
 ---
 
@@ -34,7 +34,7 @@
 所有子任务执行前确认：
 ```bash
 # 检查 .env 是否存在且含 GITHUB_TOKEN
-cat /Users/wxj/Documents/skills测试/Intel_Briefing/.env | grep GITHUB_TOKEN
+cat ${INTEL_BRIEFING_ROOT:-../Intel_Briefing}/.env | grep GITHUB_TOKEN
 ```
 如果 GITHUB_TOKEN 缺失，**所有子任务均无法运行**，提示用户配置。
 

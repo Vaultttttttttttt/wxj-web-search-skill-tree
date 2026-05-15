@@ -15,22 +15,22 @@
 
 ```bash
 # 搜索话题推文
-bash /Users/wxj/Documents/skills测试/UltimateSearchSkill/scripts/grok-search.sh \
+bash ${ULTIMATE_SEARCH_DIR:-../UltimateSearchSkill}/scripts/grok-search.sh \
   --query "搜索X/Twitter上关于[关键词]的最新推文，返回原文、作者、时间和链接"
 
 # 抓某人最近推文
-bash /Users/wxj/Documents/skills测试/UltimateSearchSkill/scripts/grok-search.sh \
+bash ${ULTIMATE_SEARCH_DIR:-../UltimateSearchSkill}/scripts/grok-search.sh \
   --query "搜索@[handle] 在X上最近5条推文，返回原文、时间和推文链接"
 
 # 热门话题
-bash /Users/wxj/Documents/skills测试/UltimateSearchSkill/scripts/grok-search.sh \
+bash ${ULTIMATE_SEARCH_DIR:-../UltimateSearchSkill}/scripts/grok-search.sh \
   --query "X/Twitter今日[话题]热门讨论，列出最有影响力的推文原文和链接"
 ```
 
 ## Reddit（首选：Grok 联网搜索）
 
 ```bash
-bash /Users/wxj/Documents/skills测试/UltimateSearchSkill/scripts/grok-search.sh \
+bash ${ULTIMATE_SEARCH_DIR:-../UltimateSearchSkill}/scripts/grok-search.sh \
   --query "搜索Reddit上关于[关键词]的热门帖子，返回标题、摘要和链接"
 ```
 

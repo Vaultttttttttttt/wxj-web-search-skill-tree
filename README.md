@@ -59,7 +59,7 @@ artifact_markdown_path
 默认输出目录：
 
 ```text
-/Users/wxj/Documents/skills测试/web_api/script/outputs
+script/outputs
 ```
 
 ## 安装与启动
@@ -67,7 +67,7 @@ artifact_markdown_path
 ### 推荐：独立部署包启动
 
 ```bash
-cd /Users/wxj/Documents/skills测试/web_api/script
+cd script
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -78,13 +78,13 @@ python run_server.py
 服务会默认读取：
 
 ```text
-/Users/wxj/Documents/skills测试/web_api/script/api_keys.txt
+script/api_keys.txt
 ```
 
 也可以直接：
 
 ```bash
-cd /Users/wxj/Documents/skills测试/web_api/script
+cd script
 uvicorn roma_web_search_api.main:app --host 0.0.0.0 --port 8099
 ```
 
@@ -93,7 +93,7 @@ uvicorn roma_web_search_api.main:app --host 0.0.0.0 --port 8099
 旧命令仍然可用：
 
 ```bash
-cd /Users/wxj/Documents/skills测试
+cd ..
 uvicorn web_api.main:app --host 0.0.0.0 --port 8099
 ```
 

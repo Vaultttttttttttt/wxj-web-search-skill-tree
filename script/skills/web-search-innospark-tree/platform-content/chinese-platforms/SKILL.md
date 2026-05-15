@@ -14,7 +14,7 @@ WebSearch: site:bilibili.com [关键词]
 WebSearch: bilibili [关键词] 2026
 
 # Grok 搜索（获取今日热点）
-bash /Users/wxj/Documents/skills测试/UltimateSearchSkill/scripts/grok-search.sh \
+bash ${ULTIMATE_SEARCH_DIR:-../UltimateSearchSkill}/scripts/grok-search.sh \
   --query "B站今日[关键词]热门视频，列出标题、UP主、播放量和链接"
 ```
 
@@ -26,7 +26,7 @@ WebSearch: site:zhihu.com [关键词]
 WebSearch: 知乎 [关键词]
 
 # Grok 搜索
-bash /Users/wxj/Documents/skills测试/UltimateSearchSkill/scripts/grok-search.sh \
+bash ${ULTIMATE_SEARCH_DIR:-../UltimateSearchSkill}/scripts/grok-search.sh \
   --query "知乎今日[关键词]热门问答，列出问题标题、高赞回答摘要和链接"
 ```
 
@@ -36,7 +36,7 @@ bash /Users/wxj/Documents/skills测试/UltimateSearchSkill/scripts/grok-search.s
 WebSearch: 小红书 [关键词]
 WebSearch: site:xiaohongshu.com [关键词]
 
-bash /Users/wxj/Documents/skills测试/UltimateSearchSkill/scripts/grok-search.sh \
+bash ${ULTIMATE_SEARCH_DIR:-../UltimateSearchSkill}/scripts/grok-search.sh \
   --query "小红书上关于[关键词]的热门笔记，列出标题、内容摘要和链接"
 ```
 
@@ -46,7 +46,7 @@ bash /Users/wxj/Documents/skills测试/UltimateSearchSkill/scripts/grok-search.s
 WebSearch: 微博 [关键词]
 WebSearch: site:weibo.com [关键词]
 
-bash /Users/wxj/Documents/skills测试/UltimateSearchSkill/scripts/grok-search.sh \
+bash ${ULTIMATE_SEARCH_DIR:-../UltimateSearchSkill}/scripts/grok-search.sh \
   --query "微博今日[关键词]热门内容，列出博主、内容原文和链接"
 ```
 
@@ -62,7 +62,7 @@ WebSearch: 微信公众号 [关键词]
 
 ```python
 # 使用 global_search_multi.py 调用 Metaso API
-python3 /Users/wxj/Documents/skills测试/web-search-innospark-tree/scripts/global_search_multi.py \
+python3 ${WEB_SEARCH_SKILL_ROOT:-.}/scripts/global_search_multi.py \
   --query "[关键词]" --platforms metaso
 ```
 

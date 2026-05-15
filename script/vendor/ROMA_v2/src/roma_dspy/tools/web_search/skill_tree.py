@@ -19,6 +19,14 @@ from typing import Any, Dict, List, Optional, Sequence
 from roma_dspy.tools.base.base import BaseToolkit
 
 
+def _discover_bundle_root() -> Path:
+    """Find the standalone web_api/script bundle root from this vendored file."""
+    for parent in Path(__file__).resolve().parents:
+        if (parent / "skills" / "web-search-innospark-tree").exists():
+            return parent
+    return Path.cwd()
+
+
 class SkillTreeWebSearchToolkit(BaseToolkit):
     """Web search toolkit backed by local skill-tree scripts."""
 
@@ -27,7 +35,8 @@ class SkillTreeWebSearchToolkit(BaseToolkit):
         self.shell_bin = self.config.get("shell_bin", "bash")
 
     def _initialize_tools(self) -> None:
-        default_root = "/Users/wxj/Documents/skills测试/web-search-innospark-tree"
+        bundle_root = _discover_bundle_root()
+        default_root = bundle_root / "skills" / "web-search-innospark-tree"
         self.skill_root = Path(
             self.config.get("skill_root")
             or os.getenv("WEB_SEARCH_SKILL_ROOT")
@@ -56,7 +65,7 @@ class SkillTreeWebSearchToolkit(BaseToolkit):
         self.tavily_min_score = float(self.config.get("tavily_min_score", 0.05))
 
         # Optional union-search aggregation layer for broader coverage.
-        default_union_root = "/Users/wxj/Documents/skills测试/union-search-skill"
+        default_union_root = bundle_root / "skills" / "union-search-skill"
         self.union_search_enabled = bool(self.config.get("union_search_enabled", True))
         self.union_trigger_mode = str(self.config.get("union_trigger_mode", "auto")).lower()
         self.union_trigger_min_results = int(self.config.get("union_trigger_min_results", 8))
@@ -82,7 +91,7 @@ class SkillTreeWebSearchToolkit(BaseToolkit):
         )
         # Optional news-aggregator fallback for source diversity when union/provider
         # backends are partially unavailable.
-        default_news_aggregator_root = "/Users/wxj/Documents/skills测试/news-aggregator-skill"
+        default_news_aggregator_root = bundle_root / "skills" / "news-aggregator-skill"
         self.news_aggregator_enabled = bool(self.config.get("news_aggregator_enabled", True))
         self.news_aggregator_min_providers = int(
             self.config.get("news_aggregator_min_providers", 3)
@@ -1557,12 +1566,19 @@ class SkillTreeWebSearchToolkit(BaseToolkit):
         return Path(tmp_path)
 
     def _resolve_union_env_file(self) -> Optional[Path]:
+        bundle_root = (
+            self.skill_root.parent.parent
+            if self.skill_root.parent.name == "skills"
+            else self.skill_root.parent
+        )
         candidates = [
             self.union_root / ".env",
             self.skill_root / ".env",
+            self.skill_root.parent / "academic-research-skills" / ".env",
+            self.skill_root.parent / "gs-skills" / ".env",
+            bundle_root / "vendor" / "ROMA_v2" / ".env",
+            bundle_root / ".env",
             Path(os.getenv("WEB_SEARCH_SKILL_ROOT", "")) / ".env" if os.getenv("WEB_SEARCH_SKILL_ROOT") else None,
-            Path("/app/web-search-innospark-tree/.env"),
-            Path("/app/.env"),
         ]
         for c in candidates:
             if c is None:

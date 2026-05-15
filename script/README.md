@@ -27,13 +27,13 @@ script/
 Copy only this folder to the server if the Python dependencies are available:
 
 ```bash
-scp -r /Users/wxj/Documents/skills测试/web_api/script user@server:/opt/roma-web-search
+scp -r . user@server:roma-web-search
 ```
 
 On the server:
 
 ```bash
-cd /opt/roma-web-search
+cd roma-web-search
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt

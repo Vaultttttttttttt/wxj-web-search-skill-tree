@@ -2,7 +2,7 @@
 
 ## 🧭 你在哪里
 `web-search-innospark-tree/multi-platform-search/`
-工具来源：Union Search (`/Users/wxj/Documents/skills测试/union-search-skill/`)
+工具来源：Union Search (`${WEB_SEARCH_UNION_ROOT:-../union-search-skill}/`)
 
 ---
 
@@ -34,7 +34,7 @@ GitHub/代码/技术文档/DuckDuckGo   → code-dev（无需API Key，直接可
 pip install requests python-dotenv duckduckgo-search
 
 # 验证
-cd /Users/wxj/Documents/skills测试/union-search-skill
+cd ${WEB_SEARCH_UNION_ROOT:-../union-search-skill}
 python scripts/duckduckgo/duckduckgo_search.py "test" --limit 1
 ```
 

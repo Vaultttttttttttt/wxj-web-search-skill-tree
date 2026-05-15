@@ -33,7 +33,7 @@ curl https://r.jina.ai/https://news.ycombinator.com
 若 Jina Reader 失败，尝试：
 ```bash
 # UltimateSearch 的 web-fetch（支持更多场景）
-bash /Users/wxj/Documents/skills测试/UltimateSearchSkill/scripts/web-fetch.sh \
+bash ${ULTIMATE_SEARCH_DIR:-../UltimateSearchSkill}/scripts/web-fetch.sh \
   --url "https://example.com"
 ```
 

@@ -1,6 +1,6 @@
 # Bounty Hunter — Layer 3 叶子节点
 
-**执行脚本**：`/Users/wxj/Documents/skills测试/Intel_Briefing/run_bounty_hunter.py`
+**执行脚本**：`${INTEL_BRIEFING_ROOT:-../Intel_Briefing}/run_bounty_hunter.py`
 
 ## 功能
 自动扫描 V2EX 悬赏板块 + Chrome 扩展市场，寻找短期接单变现机会。
@@ -9,7 +9,7 @@
 ## 执行命令
 
 ```bash
-cd /Users/wxj/Documents/skills测试/Intel_Briefing && python run_bounty_hunter.py
+cd ${INTEL_BRIEFING_ROOT:-../Intel_Briefing} && python run_bounty_hunter.py
 ```
 
 ## 环境要求
@@ -23,5 +23,5 @@ cd /Users/wxj/Documents/skills测试/Intel_Briefing && python run_bounty_hunter.
 
 | 错误 | 解决 |
 |------|------|
-| `ModuleNotFoundError` | `pip install -r /Users/wxj/Documents/skills测试/Intel_Briefing/requirements.txt` |
+| `ModuleNotFoundError` | `pip install -r ${INTEL_BRIEFING_ROOT:-../Intel_Briefing}/requirements.txt` |
 | `GITHUB_TOKEN not set` | 在 `.env` 中添加 `GITHUB_TOKEN=your_github_token_here` |

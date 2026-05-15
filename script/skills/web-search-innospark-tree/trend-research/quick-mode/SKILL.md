@@ -1,6 +1,6 @@
 # Trend Research Quick Mode — Layer 3 叶子节点
 
-**执行脚本**：`/Users/wxj/Documents/skills测试/last30days-skill/scripts/last30days.py`
+**执行脚本**：`${LAST30DAYS_SKILL_ROOT:-../last30days-skill}/scripts/last30days.py`
 
 ## 功能
 快速研究某话题近30天的社交媒体讨论热度，约1-2分钟出结果。
@@ -9,7 +9,7 @@
 ## 执行命令
 
 ```bash
-python3 /Users/wxj/Documents/skills测试/last30days-skill/scripts/last30days.py \
+python3 ${LAST30DAYS_SKILL_ROOT:-../last30days-skill}/scripts/last30days.py \
   "你的话题" --quick --emit=compact --no-native-web \
   --save-dir=~/Documents/Last30Days
 ```
@@ -18,11 +18,11 @@ python3 /Users/wxj/Documents/skills测试/last30days-skill/scripts/last30days.py
 
 ```bash
 # 研究 "Claude Code" 近30天的讨论
-python3 /Users/wxj/Documents/skills测试/last30days-skill/scripts/last30days.py \
+python3 ${LAST30DAYS_SKILL_ROOT:-../last30days-skill}/scripts/last30days.py \
   "Claude Code" --quick --emit=compact --no-native-web
 
 # 7天内的讨论（更聚焦）
-python3 /Users/wxj/Documents/skills测试/last30days-skill/scripts/last30days.py \
+python3 ${LAST30DAYS_SKILL_ROOT:-../last30days-skill}/scripts/last30days.py \
   "Vibe coding" --days=7 --quick --emit=compact --no-native-web
 ```
 

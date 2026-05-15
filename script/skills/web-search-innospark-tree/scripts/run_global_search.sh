@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DEFAULT_ULTIMATE_DIR="/Users/wxj/Documents/skills测试/UltimateSearchSkill"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SKILL_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SKILLS_ROOT="$(cd "$SKILL_ROOT/.." && pwd)"
+DEFAULT_ULTIMATE_DIR="$SKILLS_ROOT/UltimateSearchSkill"
 ULTIMATE_DIR="${ULTIMATE_SEARCH_DIR:-$DEFAULT_ULTIMATE_DIR}"
 
 if [[ ! -d "$ULTIMATE_DIR" ]]; then

@@ -64,5 +64,5 @@ Sam Altman,sama,1,example
 
 ```bash
 # 每天早上 8 点执行
-0 8 * * * cd /Users/wxj/Documents/skills测试/web-search-innospark-tree && /usr/bin/python3 scripts/x_ai_watchlist.py --limit 5
+0 8 * * * cd ${WEB_SEARCH_SKILL_ROOT:-.} && /usr/bin/python3 scripts/x_ai_watchlist.py --limit 5
 ```

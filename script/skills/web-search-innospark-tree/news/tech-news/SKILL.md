@@ -1,12 +1,12 @@
 # Tech News — Layer 3 叶子节点
 
-**脚本根目录**：`/Users/wxj/Documents/skills测试/news-aggregator-skill/`
+**脚本根目录**：`${WEB_SEARCH_NEWS_AGGREGATOR_ROOT:-../news-aggregator-skill}/`
 ⚡ **无需 API Key，开箱即用**
 
 ## 执行命令
 
 ```bash
-cd /Users/wxj/Documents/skills测试/news-aggregator-skill
+cd ${WEB_SEARCH_NEWS_AGGREGATOR_ROOT:-../news-aggregator-skill}
 
 # Hacker News（最稳定，推荐验证环境时用）
 python3 scripts/fetch_news.py --source hackernews --limit 15 --no-save
@@ -47,7 +47,7 @@ python3 scripts/fetch_news.py --source hackernews --keyword "AI,LLM" --no-save
 ## 前置依赖
 
 ```bash
-pip install -r /Users/wxj/Documents/skills测试/news-aggregator-skill/requirements.txt
+pip install -r ${WEB_SEARCH_NEWS_AGGREGATOR_ROOT:-../news-aggregator-skill}/requirements.txt
 ```
 
 ## 错误处理

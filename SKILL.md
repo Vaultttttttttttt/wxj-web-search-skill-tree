@@ -15,8 +15,8 @@ Use this skill when a task needs web-search results from the ROMA search stack t
 - Prefer reading the API base URL from `ROMA_WEB_SEARCH_BASE_URL`.
 - Authenticate with `Authorization: Bearer <api_key>` or `X-API-Key: <api_key>`.
 - Local development keys may be stored in `web_api/script/api_keys.txt`; do not expose real keys in final user-facing answers.
-- If working in wxj's local workspace, the full API reference is at `/Users/wxj/Documents/skills测试/web_api/API_Reference.md`.
-- The deployable backend bundle is `/Users/wxj/Documents/skills测试/web_api/script`.
+- The full API reference is at `API_Reference.md`.
+- The deployable backend bundle is `script/`.
 
 ## Health Check
 
@@ -30,14 +30,14 @@ curl -s "$BASE_URL/healthz"
 If the server is not running locally, start it from the workspace that contains `web_api`:
 
 ```bash
-cd /Users/wxj/Documents/skills测试/web_api/script
-/Users/wxj/Documents/skills测试/ROMA_v2/.venv/bin/python run_server.py
+cd script
+python run_server.py
 ```
 
-The old compatibility command still works from `/Users/wxj/Documents/skills测试`:
+The old compatibility command still works from the repository parent:
 
 ```bash
-/Users/wxj/Documents/skills测试/ROMA_v2/.venv/bin/python -m uvicorn web_api.main:app --host 127.0.0.1 --port 8099
+python -m uvicorn web_api.main:app --host 127.0.0.1 --port 8099
 ```
 
 ## Synchronous Search

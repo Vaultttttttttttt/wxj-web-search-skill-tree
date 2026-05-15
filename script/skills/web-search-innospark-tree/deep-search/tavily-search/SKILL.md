@@ -1,6 +1,6 @@
 # Tavily Search — Layer 3 叶子节点
 
-**执行脚本**：`/Users/wxj/Documents/skills测试/UltimateSearchSkill/scripts/tavily-search.sh`
+**执行脚本**：`${ULTIMATE_SEARCH_DIR:-../UltimateSearchSkill}/scripts/tavily-search.sh`
 
 ## 功能
 结构化搜索，返回多个链接+摘要+可选的完整网页内容。
@@ -14,15 +14,15 @@ export TAVILY_API_URL=https://api.tavily.com
 export TAVILY_API_KEY=your_tavily_api_key_here
 
 # 基础搜索
-bash /Users/wxj/Documents/skills测试/UltimateSearchSkill/scripts/tavily-search.sh \
+bash ${ULTIMATE_SEARCH_DIR:-../UltimateSearchSkill}/scripts/tavily-search.sh \
   --query "搜索关键词" --depth basic --include-answer
 
 # 新闻模式（近期新闻）
-bash /Users/wxj/Documents/skills测试/UltimateSearchSkill/scripts/tavily-search.sh \
+bash ${ULTIMATE_SEARCH_DIR:-../UltimateSearchSkill}/scripts/tavily-search.sh \
   --query "AI 最新进展" --topic news --time-range week
 
 # 深度模式（完整网页内容）
-bash /Users/wxj/Documents/skills测试/UltimateSearchSkill/scripts/tavily-search.sh \
+bash ${ULTIMATE_SEARCH_DIR:-../UltimateSearchSkill}/scripts/tavily-search.sh \
   --query "FastAPI vs Django 2026" --depth advanced
 ```
 

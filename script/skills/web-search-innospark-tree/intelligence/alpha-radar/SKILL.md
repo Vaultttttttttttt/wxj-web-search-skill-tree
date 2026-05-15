@@ -1,6 +1,6 @@
 # Alpha Radar — Layer 3 叶子节点
 
-**执行脚本**：`/Users/wxj/Documents/skills测试/Intel_Briefing/run_alpha_radar.py`
+**执行脚本**：`${INTEL_BRIEFING_ROOT:-../Intel_Briefing}/run_alpha_radar.py`
 
 ## 功能
 用 Grok 搜索 Web3/Solana/开源早期项目，识别尚未被广泛发现的 Alpha 机会。
@@ -9,7 +9,7 @@
 ## 执行命令
 
 ```bash
-cd /Users/wxj/Documents/skills测试/Intel_Briefing && python run_alpha_radar.py
+cd ${INTEL_BRIEFING_ROOT:-../Intel_Briefing} && python run_alpha_radar.py
 ```
 
 ## 环境要求
@@ -24,4 +24,4 @@ cd /Users/wxj/Documents/skills测试/Intel_Briefing && python run_alpha_radar.py
 | 错误 | 解决 |
 |------|------|
 | `XAI_API_KEY not set` | Alpha Radar 核心依赖 Grok，建议配置后再运行 |
-| `ModuleNotFoundError` | `pip install -r /Users/wxj/Documents/skills测试/Intel_Briefing/requirements.txt` |
+| `ModuleNotFoundError` | `pip install -r ${INTEL_BRIEFING_ROOT:-../Intel_Briefing}/requirements.txt` |

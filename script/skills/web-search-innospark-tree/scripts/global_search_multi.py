@@ -51,14 +51,14 @@ def load_env(path: Path) -> None:
 
 def load_default_env_files() -> None:
     """Load API keys from the skill and common sibling project .env files."""
+    bundle_root = SKILL_ROOT.parent.parent if SKILL_ROOT.parent.name == 'skills' else SKILL_ROOT.parent
     candidates = [
         SKILL_ROOT / '.env',
         SKILL_ROOT.parent / 'union-search-skill' / '.env',
-        SKILL_ROOT.parent / 'ROMA_v2' / '.env',
-        Path('/app/web-search-innospark-tree/.env'),
-        Path('/app/union-search-skill/.env'),
-        Path('/app/ROMA_v2/.env'),
-        Path('/app/.env'),
+        SKILL_ROOT.parent / 'academic-research-skills' / '.env',
+        SKILL_ROOT.parent / 'gs-skills' / '.env',
+        bundle_root / 'vendor' / 'ROMA_v2' / '.env',
+        bundle_root / '.env',
     ]
     seen: set[Path] = set()
     for path in candidates:
@@ -568,8 +568,9 @@ def search_bilibili(query: str) -> dict:
     return {'results': videos}
 
 
-_DEFAULT_UNION_ROOT = '/Users/wxj/Documents/skills测试/union-search-skill'
-_UNION_ROOT = Path(os.environ.get('WEB_SEARCH_UNION_ROOT') or _DEFAULT_UNION_ROOT)
+_UNION_ROOT = Path(
+    os.environ.get('WEB_SEARCH_UNION_ROOT') or SKILL_ROOT.parent / 'union-search-skill'
+).expanduser()
 _ZHIHU_SCRIPT = _UNION_ROOT / 'scripts' / 'zhihu' / 'zhihu_core.py'
 _DDG_SCRIPT = _UNION_ROOT / 'scripts' / 'duckduckgo' / 'duckduckgo_search.py'
 

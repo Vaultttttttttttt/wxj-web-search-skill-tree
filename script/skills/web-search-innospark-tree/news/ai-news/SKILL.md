@@ -1,11 +1,11 @@
 # AI News — Layer 3 叶子节点
 
-**脚本根目录**：`/Users/wxj/Documents/skills测试/news-aggregator-skill/`
+**脚本根目录**：`${WEB_SEARCH_NEWS_AGGREGATOR_ROOT:-../news-aggregator-skill}/`
 
 ## 执行命令
 
 ```bash
-cd /Users/wxj/Documents/skills测试/news-aggregator-skill
+cd ${WEB_SEARCH_NEWS_AGGREGATOR_ROOT:-../news-aggregator-skill}
 
 # HuggingFace 每日论文（⚠️ 需要 Playwright）
 python3 scripts/fetch_news.py --source huggingface --deep --no-save

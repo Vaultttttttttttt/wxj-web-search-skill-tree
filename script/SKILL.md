@@ -14,9 +14,9 @@ Use this skill when a task needs web-search results from the ROMA search stack t
 - Prefer reading credentials from `ROMA_WEB_SEARCH_API_KEY`.
 - Prefer reading the API base URL from `ROMA_WEB_SEARCH_BASE_URL`.
 - Authenticate with `Authorization: Bearer <api_key>` or `X-API-Key: <api_key>`.
-- Local development keys may be stored in `web_api/script/api_keys.txt`; do not expose real keys in final user-facing answers.
-- If working in wxj's local workspace, the full API reference is at `/Users/wxj/Documents/skills测试/web_api/API_Reference.md`.
-- The deployable backend bundle is `/Users/wxj/Documents/skills测试/web_api/script`.
+- Local development keys may be stored in `api_keys.txt`; do not expose real keys in final user-facing answers.
+- The full API reference is at `API_Reference.md`.
+- The deployable backend bundle is this directory.
 
 ## Health Check
 
@@ -27,17 +27,16 @@ BASE_URL="${ROMA_WEB_SEARCH_BASE_URL:-http://127.0.0.1:8099}"
 curl -s "$BASE_URL/healthz"
 ```
 
-If the server is not running locally, start it from the workspace that contains `web_api`:
+If the server is not running locally, start it from this standalone bundle:
 
 ```bash
-cd /Users/wxj/Documents/skills测试/web_api/script
-/Users/wxj/Documents/skills测试/ROMA_v2/.venv/bin/python run_server.py
+python run_server.py
 ```
 
-The old compatibility command still works from `/Users/wxj/Documents/skills测试`:
+If using the full repository rather than this standalone bundle, the old compatibility command still works from the repository parent:
 
 ```bash
-/Users/wxj/Documents/skills测试/ROMA_v2/.venv/bin/python -m uvicorn web_api.main:app --host 127.0.0.1 --port 8099
+python -m uvicorn web_api.main:app --host 127.0.0.1 --port 8099
 ```
 
 ## Synchronous Search
@@ -162,7 +161,7 @@ The task store is in memory by default. If the API server restarts, old task IDs
 
 ## Deployment Bundle
 
-For server deployment, copy `web_api/script` as the backend package. It contains:
+For server deployment, copy this directory as the backend package. It contains:
 
 - `roma_web_search_api/`: FastAPI app and API service code.
 - `vendor/ROMA_v2/src/`: ROMA runtime source snapshot.
@@ -175,7 +174,7 @@ For server deployment, copy `web_api/script` as the backend package. It contains
 On a server, prefer:
 
 ```bash
-cd /path/to/script
+cd /path/to/roma-web-search
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt

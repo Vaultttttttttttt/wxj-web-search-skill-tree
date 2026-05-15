@@ -1,6 +1,6 @@
 # Daily Briefing — Layer 3 叶子节点
 
-**执行脚本**：`/Users/wxj/Documents/skills测试/Intel_Briefing/run_mission.py`
+**执行脚本**：`${INTEL_BRIEFING_ROOT:-../Intel_Briefing}/run_mission.py`
 
 ## 功能
 从 10+ 数据源自动抓取、翻译、分析，生成含8大板块的中文日报：
@@ -9,7 +9,7 @@
 ## 执行命令
 
 ```bash
-cd /Users/wxj/Documents/skills测试/Intel_Briefing && python run_mission.py
+cd ${INTEL_BRIEFING_ROOT:-../Intel_Briefing} && python run_mission.py
 ```
 
 报告保存至 `Intel_Briefing/reports/` 目录。
@@ -25,14 +25,14 @@ cd /Users/wxj/Documents/skills测试/Intel_Briefing && python run_mission.py
 
 ```bash
 # 检查必要变量
-cat /Users/wxj/Documents/skills测试/Intel_Briefing/.env | grep GITHUB_TOKEN
+cat ${INTEL_BRIEFING_ROOT:-../Intel_Briefing}/.env | grep GITHUB_TOKEN
 ```
 
 ## 错误处理
 
 | 错误 | 解决 |
 |------|------|
-| `ModuleNotFoundError` | `pip install -r /Users/wxj/Documents/skills测试/Intel_Briefing/requirements.txt` |
+| `ModuleNotFoundError` | `pip install -r ${INTEL_BRIEFING_ROOT:-../Intel_Briefing}/requirements.txt` |
 | `GITHUB_TOKEN not set` | 在 `.env` 中添加 `GITHUB_TOKEN=your_github_token_here` |
 | `XAI_API_KEY not set` | Twitter板块跳过，其他板块不受影响 |
 | 网络超时 | `export HTTP_PROXY=http://127.0.0.1:7890` |

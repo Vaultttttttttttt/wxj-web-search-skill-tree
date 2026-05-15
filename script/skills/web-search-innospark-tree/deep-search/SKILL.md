@@ -2,7 +2,7 @@
 
 ## 🧭 你在哪里
 `web-search-innospark-tree/deep-search/`
-工具来源：UltimateSearch (`/Users/wxj/Documents/skills测试/UltimateSearchSkill/`)
+工具来源：UltimateSearch (`${ULTIMATE_SEARCH_DIR:-../UltimateSearchSkill}/`)
 
 ---
 
@@ -40,7 +40,7 @@ export TAVILY_API_KEY=your_tavily_api_key_here
 
 或加载 .env：
 ```bash
-cd /Users/wxj/Documents/skills测试/UltimateSearchSkill
+cd ${ULTIMATE_SEARCH_DIR:-../UltimateSearchSkill}
 set -a && source .env && set +a
 ```
 
