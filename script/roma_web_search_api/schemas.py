@@ -39,3 +39,6 @@ class SearchExecution(BaseModel):
     roma_result: Dict[str, Any]
     artifact_json_path: Optional[str] = None
     artifact_markdown_path: Optional[str] = None
+    artifact_record_id: Optional[str] = None
+    api_key: Optional[str] = None
+    api_key_hash: Optional[str] = None

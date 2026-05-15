@@ -19,6 +19,8 @@ def iso_now() -> str:
 class TaskRecord:
     task_id: str
     payload: WebSearchRequest
+    api_key_hash: str
+    api_key: Optional[str] = field(default=None, repr=False)
     status: str = "pending"
     created_at: str = field(default_factory=iso_now)
     updated_at: str = field(default_factory=iso_now)
@@ -34,9 +36,14 @@ class TaskStore:
         self._tasks: Dict[str, TaskRecord] = {}
         self._lock = asyncio.Lock()
 
-    async def create(self, payload: WebSearchRequest) -> TaskRecord:
+    async def create(self, payload: WebSearchRequest, api_key: Optional[str] = None) -> TaskRecord:
         await self._prune_expired()
-        task = TaskRecord(task_id=str(uuid.uuid4()), payload=payload)
+        task = TaskRecord(
+            task_id=str(uuid.uuid4()),
+            payload=payload,
+            api_key=api_key,
+            api_key_hash=self.service._api_key_hash(api_key),
+        )
         async with self._lock:
             self._tasks[task.task_id] = task
         asyncio.create_task(self._run(task.task_id))
@@ -56,7 +63,11 @@ class TaskStore:
             task.updated_at = iso_now()
 
         try:
-            result = await self.service.execute(task.payload, artifact_id=task.task_id)
+            result = await self.service.execute(
+                task.payload,
+                artifact_id=task.task_id,
+                api_key=task.api_key,
+            )
             async with self._lock:
                 latest = self._tasks.get(task_id)
                 if latest is None:

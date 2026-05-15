@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import copy
+import hashlib
 import json
 import os
 import re
@@ -137,6 +138,7 @@ class WebSearchService:
         self.settings = settings
         self._toolkit: Any = None
         self._toolkit_lock = asyncio.Lock()
+        self._history_lock = asyncio.Lock()
 
     async def _ensure_toolkit(self) -> Any:
         if self._toolkit is not None:
@@ -196,6 +198,19 @@ class WebSearchService:
         return self.settings.artifact_dir / f"{stamp}_{suffix}_{slug}"
 
     @staticmethod
+    def _api_key_hash(api_key: Optional[str]) -> str:
+        value = api_key or "anonymous"
+        return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+    @staticmethod
+    def _api_key_label(api_key: Optional[str]) -> str:
+        if not api_key:
+            return "anonymous"
+        if len(api_key) <= 10:
+            return f"{api_key[:3]}***"
+        return f"{api_key[:6]}...{api_key[-4:]}"
+
+    @staticmethod
     def _markdown_payload(execution: SearchExecution) -> str:
         return "\n".join(
             [
@@ -214,30 +229,91 @@ class WebSearchService:
         self,
         execution: SearchExecution,
         artifact_id: Optional[str],
+        api_key: Optional[str],
     ) -> SearchExecution:
         base = self._artifact_base_path(execution.query, artifact_id)
-        json_path = base.with_suffix(".json").resolve()
+        record_id = artifact_id or base.stem
+        json_path = self.settings.history_file.resolve()
         markdown_path = base.with_suffix(".md").resolve()
 
         execution.artifact_json_path = str(json_path)
         execution.artifact_markdown_path = str(markdown_path)
+        execution.artifact_record_id = record_id
+        execution.api_key = self._api_key_label(api_key)
+        execution.api_key_hash = self._api_key_hash(api_key)
 
-        await asyncio.to_thread(
-            json_path.write_text,
-            json.dumps(execution.model_dump(), ensure_ascii=False, indent=2),
-            "utf-8",
-        )
         await asyncio.to_thread(
             markdown_path.write_text,
             self._markdown_payload(execution),
             "utf-8",
         )
+        await self._append_history_record(execution)
         return execution
+
+    def _read_history_sync(self) -> dict[str, Any]:
+        path = self.settings.history_file
+        if not path.exists():
+            return {"version": 1, "records": []}
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return {"version": 1, "records": []}
+        if not isinstance(payload, dict):
+            return {"version": 1, "records": []}
+        records = payload.get("records")
+        if not isinstance(records, list):
+            payload["records"] = []
+        payload.setdefault("version", 1)
+        return payload
+
+    def _write_history_sync(self, payload: dict[str, Any]) -> None:
+        path = self.settings.history_file
+        path.parent.mkdir(parents=True, exist_ok=True)
+        tmp_path = path.with_suffix(path.suffix + ".tmp")
+        tmp_path.write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        os.replace(tmp_path, path)
+
+    async def _append_history_record(self, execution: SearchExecution) -> None:
+        record = execution.model_dump()
+        record["created_at"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+        async with self._history_lock:
+            payload = await asyncio.to_thread(self._read_history_sync)
+            payload["records"].append(record)
+            await asyncio.to_thread(self._write_history_sync, payload)
+
+    async def history_for_api_key(
+        self,
+        api_key: str,
+        *,
+        limit: int = 50,
+        offset: int = 0,
+    ) -> dict[str, Any]:
+        api_key_hash = self._api_key_hash(api_key)
+        limit = max(1, min(int(limit), 200))
+        offset = max(0, int(offset))
+        async with self._history_lock:
+            payload = await asyncio.to_thread(self._read_history_sync)
+        records = [
+            record
+            for record in payload.get("records", [])
+            if isinstance(record, dict) and record.get("api_key_hash") == api_key_hash
+        ]
+        records.sort(key=lambda item: str(item.get("created_at") or ""), reverse=True)
+        return {
+            "total": len(records),
+            "limit": limit,
+            "offset": offset,
+            "records": records[offset : offset + limit],
+        }
 
     async def execute(
         self,
         payload: WebSearchRequest,
         artifact_id: Optional[str] = None,
+        api_key: Optional[str] = None,
     ) -> SearchExecution:
         toolkit = await self._ensure_toolkit()
         query = extract_query(payload)
@@ -255,7 +331,11 @@ class WebSearchService:
             content=content,
             roma_result=roma_result,
         )
-        return await self._persist_execution(execution, artifact_id=artifact_id)
+        return await self._persist_execution(
+            execution,
+            artifact_id=artifact_id,
+            api_key=api_key,
+        )
 
     async def cleanup(self) -> None:
         toolkit = self._toolkit

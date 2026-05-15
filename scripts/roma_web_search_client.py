@@ -159,6 +159,14 @@ def command_poll(args: argparse.Namespace) -> int:
         return 0 if status < 400 else 1
 
 
+def command_history(args: argparse.Namespace) -> int:
+    url = f"{args.base_url.rstrip('/')}/web-search/v1/history"
+    query = urllib.parse.urlencode({"limit": args.limit, "offset": args.offset})
+    status, data = request_json("GET", f"{url}?{query}", args.api_key)
+    print_json({"http_status": status, "data": data})
+    return 0 if status < 400 else 1
+
+
 def add_common_request_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("query", help="Search question")
     parser.add_argument("--top-n", type=int, default=12)
@@ -206,6 +214,11 @@ def build_parser() -> argparse.ArgumentParser:
     poll.add_argument("--summary-only", action="store_true")
     poll.add_argument("--content-only", action="store_true")
     poll.set_defaults(func=command_poll)
+
+    history = subparsers.add_parser("history", help="List persisted requests for the API key")
+    history.add_argument("--limit", type=int, default=50)
+    history.add_argument("--offset", type=int, default=0)
+    history.set_defaults(func=command_history)
 
     return parser
 

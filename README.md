@@ -14,6 +14,7 @@ script/
 2. 异步任务接口：
    - `POST /web-search/v1/create_task`
    - `GET|POST /web-search/v1/query_task`
+3. 当前 API key 历史记录接口：`GET /web-search/v1/history`
 
 同时提供 `/deepsearch/v1/*` 兼容别名，便于按 UniFuncs 深搜风格接入。
 
@@ -58,12 +59,15 @@ data.result.content
 data.result.roma_result
 ```
 
-每次检索还会自动落盘两份文件：
+每次检索还会自动落盘：
 
 ```json
 artifact_json_path
+artifact_record_id
 artifact_markdown_path
 ```
+
+其中 `artifact_json_path` 指向统一历史文件，默认是 `script/outputs/search_history.json`；`artifact_record_id` 是本次检索在该 JSON 文件中的记录 ID；`artifact_markdown_path` 仍然是一次请求一个 Markdown 文件。统一历史文件会保存 masked API key 和 `api_key_hash`，用于后续按 key 查询和隔离。
 
 默认输出目录：
 
@@ -199,6 +203,15 @@ curl -X POST "http://127.0.0.1:8099/web-search/v1/query_task" \
   -d '{"task_id": "<task-id>"}'
 ```
 
+查询当前 key 的历史记录：
+
+```bash
+curl -s -G "http://127.0.0.1:8099/web-search/v1/history" \
+  -H "Authorization: Bearer sk-your-api-key" \
+  --data-urlencode "limit=20" \
+  --data-urlencode "offset=0" | jq .
+```
+
 ## 环境变量
 
 见 `script/.env.example`。最关键的是：
@@ -208,6 +221,7 @@ curl -X POST "http://127.0.0.1:8099/web-search/v1/query_task" \
 - `WEB_SEARCH_UNION_ROOT`
 - `WEB_SEARCH_NEWS_AGGREGATOR_ROOT`
 - `WEB_API_ARTIFACT_DIR`
+- `WEB_API_HISTORY_FILE`
 - `WEB_API_KEYS_FILE`
 - `TAVILY_API_KEY`
 

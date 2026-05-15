@@ -75,7 +75,8 @@ Read the answer from:
 
 - `choices[0].message.content`: Markdown retrieval report.
 - `roma_result.contexts`: structured retrieved evidence.
-- `artifact_json_path`: persisted JSON result path on the API server.
+- `artifact_json_path`: shared JSON history file path on the API server.
+- `artifact_record_id`: current request's record ID inside the shared JSON history file.
 - `artifact_markdown_path`: persisted Markdown result path on the API server.
 
 ## Streaming Search
@@ -154,10 +155,25 @@ Completed task results are under:
 - `data.progress`: progress estimate.
 - `data.result.content`: Markdown retrieval report.
 - `data.result.roma_result.contexts`: structured evidence.
-- `data.result.artifact_json_path`: persisted JSON result path.
+- `data.result.artifact_json_path`: shared JSON history file path.
+- `data.result.artifact_record_id`: current request's record ID inside that history file.
 - `data.result.artifact_markdown_path`: persisted Markdown result path.
 
-The task store is in memory by default. If the API server restarts, old task IDs may disappear.
+The task store is in memory by default. If the API server restarts, old task IDs may disappear. Completed search records still remain in the JSON history file unless `outputs/` is cleared.
+
+## History Query
+
+Use `/web-search/v1/history` to list records for the current API key:
+
+```bash
+BASE_URL="${ROMA_WEB_SEARCH_BASE_URL:-http://127.0.0.1:8099}"
+API_KEY="${ROMA_WEB_SEARCH_API_KEY:-sk-your-api-key}"
+
+curl -s "$BASE_URL/web-search/v1/history?limit=20&offset=0" \
+  -H "Authorization: Bearer $API_KEY" | jq .
+```
+
+The history endpoint is API-key isolated. The shared JSON file stores masked `api_key` and `api_key_hash`, not the raw key.
 
 ## Deployment Bundle
 
@@ -170,6 +186,7 @@ For server deployment, copy this directory as the backend package. It contains:
 - `skills/news-aggregator-skill/`: news fallback layer.
 - `skills/academic-research-skills/` and `skills/gs-skills/`: academic-search helper skills.
 - `api_keys.txt`, `.env.example`, `requirements.txt`, `run_server.py`, and `test_ui.html`.
+- `outputs/search_history.json` is the default shared JSON history database; Markdown artifacts remain one file per request under `outputs/`.
 
 On a server, prefer:
 
@@ -208,6 +225,7 @@ Compatibility aliases may also exist under `/deepsearch/v1/*`:
 - `POST /deepsearch/v1/create_task`
 - `GET /deepsearch/v1/query_task`
 - `POST /deepsearch/v1/query_task`
+- `GET /deepsearch/v1/history`
 
 Prefer `/web-search/v1/*` for new integrations.
 

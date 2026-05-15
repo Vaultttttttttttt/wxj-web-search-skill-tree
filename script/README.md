@@ -15,7 +15,7 @@ script/
 │   ├── academic-research-skills/
 │   └── gs-skills/
 ├── api_keys.txt                  # Local API-key whitelist
-├── outputs/                      # Search artifacts
+├── outputs/                      # Search artifacts and search_history.json
 ├── test_ui.html                  # Browser test UI
 ├── .env.example
 ├── requirements.txt
@@ -67,6 +67,8 @@ Open the test UI:
 ```text
 http://127.0.0.1:8099/test-ui
 ```
+
+Searches write one Markdown file per request under `outputs/` and append the structured record to `outputs/search_history.json` by default. The JSON history stores a masked API key plus `api_key_hash`, so `/web-search/v1/history` can return only the current caller's records.
 
 ## Compatibility
 

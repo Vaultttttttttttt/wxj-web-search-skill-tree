@@ -62,6 +62,7 @@ class Settings:
     task_ttl_seconds: int
     web_backend: str
     artifact_dir: Path
+    history_file: Path
 
     def skill_tree_config(self) -> Dict[str, Any]:
         return {
@@ -79,6 +80,7 @@ def load_settings() -> Settings:
         project_root / "vendor" / "ROMA_v2" / "src",
         project_root,
     )
+    artifact_dir = _env_path("WEB_API_ARTIFACT_DIR", project_root / "outputs", project_root)
 
     return Settings(
         project_root=project_root,
@@ -118,5 +120,10 @@ def load_settings() -> Settings:
         stream_chunk_delay_ms=max(0, _env_int("WEB_API_STREAM_CHUNK_DELAY_MS", 45)),
         task_ttl_seconds=max(60, _env_int("WEB_API_TASK_TTL_SECONDS", 86400)),
         web_backend=os.getenv("WEB_API_WEB_BACKEND", "skill_tree").strip().lower(),
-        artifact_dir=_env_path("WEB_API_ARTIFACT_DIR", project_root / "outputs", project_root),
+        artifact_dir=artifact_dir,
+        history_file=_env_path(
+            "WEB_API_HISTORY_FILE",
+            artifact_dir / "search_history.json",
+            project_root,
+        ),
     )

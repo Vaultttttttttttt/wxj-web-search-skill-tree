@@ -594,6 +594,7 @@
             <button id="asyncBtn">创建异步任务</button>
             <button id="pollBtn" class="secondary">查询任务</button>
             <button id="pollAllBtn" class="secondary">查询全部任务</button>
+            <button id="historyBtn" class="secondary">查询历史</button>
             <button id="autoPollBtn" class="secondary">自动轮询</button>
           </div>
 
@@ -736,6 +737,7 @@
         duration_ms: data.statistics?.duration_ms ?? previous.duration_ms ?? "-",
         artifact_markdown_path: data.result?.artifact_markdown_path || previous.artifact_markdown_path || "",
         artifact_json_path: data.result?.artifact_json_path || previous.artifact_json_path || "",
+        artifact_record_id: data.result?.artifact_record_id || previous.artifact_record_id || "",
       });
       renderTaskList();
     }
@@ -976,6 +978,7 @@
             result_count: item.statistics?.result_count ?? "-",
             duration_ms: item.statistics?.duration_ms ?? "-",
             artifact_markdown_path: item.result?.artifact_markdown_path || "",
+            artifact_record_id: item.result?.artifact_record_id || "",
           })),
         });
         const done = results.filter((item) => item.status === "completed").length;
@@ -1009,6 +1012,27 @@
       await pollAllTasks(true);
     }
 
+    async function queryHistory() {
+      setBusy(true);
+      try {
+        const url = new URL(`${apiBase()}/web-search/v1/history`);
+        url.searchParams.set("limit", "20");
+        url.searchParams.set("offset", "0");
+        const resp = await fetch(url, { headers: { "Authorization": `Bearer ${$("apiKey").value.trim()}` } });
+        const data = await readJsonResponse(resp);
+        writeOutput(data);
+        const total = data.data?.total ?? "-";
+        const records = data.data?.records?.length ?? "-";
+        setMetrics(resp.status, `${records}/${total}`, "-");
+        setBadge("asyncBadge", resp.ok ? `历史 ${records}/${total}` : "历史失败", resp.ok ? "good" : "bad");
+      } catch (err) {
+        writeOutput(String(err));
+        setBadge("asyncBadge", "历史异常", "bad");
+      } finally {
+        setBusy(false);
+      }
+    }
+
     $("taskList").addEventListener("click", (event) => {
       const item = event.target.closest("[data-task-id]");
       if (!item) return;
@@ -1022,6 +1046,7 @@
     $("asyncBtn").addEventListener("click", createTask);
     $("pollBtn").addEventListener("click", () => pollTask(false));
     $("pollAllBtn").addEventListener("click", () => pollAllTasks(false));
+    $("historyBtn").addEventListener("click", queryHistory);
     $("autoPollBtn").addEventListener("click", autoPoll);
 
     healthCheck();

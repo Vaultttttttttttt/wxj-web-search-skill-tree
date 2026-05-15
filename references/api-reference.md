@@ -25,10 +25,11 @@
    - [任务状态流转](#任务状态流转)
    - [完整示例](#完整示例异步任务)
 5. [结果结构说明](#结果结构说明)
-6. [错误响应](#错误响应)
-7. [两种调用方式对比](#两种调用方式对比)
-8. [Python 调用示例](#python-调用示例)
-9. [部署说明](#部署说明)
+6. [历史记录查询](#历史记录查询)
+7. [错误响应](#错误响应)
+8. [两种调用方式对比](#两种调用方式对比)
+9. [Python 调用示例](#python-调用示例)
+10. [部署说明](#部署说明)
 
 ---
 
@@ -40,6 +41,7 @@
 | `/web-search/v1/create_task` | `POST` | 异步创建检索任务，立即返回 `task_id` |
 | `/web-search/v1/query_task` | `GET` | 通过 query param 查询任务状态与结果 |
 | `/web-search/v1/query_task` | `POST` | 通过 request body 查询任务状态与结果 |
+| `/web-search/v1/history` | `GET` | 查询当前 API key 的历史检索记录 |
 | `/deepsearch/v1/*` | 同上 | 与上述接口等价的兼容前缀 |
 
 该服务封装的是 ROMA 当前 Web Search 检索链路，底层会复用：
@@ -80,6 +82,8 @@ X-API-Key: <API_KEY>
 ```
 
 未携带或校验失败时返回 `401 Unauthorized`。
+
+同步结果、异步任务和历史记录都会按 API key 隔离。服务端不会把原始 API key 明文写入历史文件，只保存 masked key 与 `api_key_hash`。
 
 ---
 
@@ -173,8 +177,10 @@ Authorization: Bearer <API_KEY>
     "sources": [],
     "debug": {}
   },
-  "artifact_json_path": "/path/to/outputs/result.json",
-  "artifact_markdown_path": "/path/to/outputs/result.md"
+  "artifact_json_path": "/path/to/outputs/search_history.json",
+  "artifact_markdown_path": "/path/to/outputs/result.md",
+  "artifact_record_id": "20260515T061117Z_xxx_query",
+  "api_key": "sk-xxx...xxxx"
 }
 ```
 
@@ -398,8 +404,9 @@ curl -X POST "http://127.0.0.1:8099/web-search/v1/query_task" \
         "sources": [],
         "debug": {}
       },
-      "artifact_json_path": "/path/to/outputs/result.json",
-      "artifact_markdown_path": "/path/to/outputs/result.md"
+      "artifact_json_path": "/path/to/outputs/search_history.json",
+      "artifact_markdown_path": "/path/to/outputs/result.md",
+      "artifact_record_id": "90d0beaf-9f15-4d13-a049-bd1114ed3d59"
     },
     "statistics": {
       "result_count": 12,
@@ -502,12 +509,12 @@ curl -s -G "http://127.0.0.1:8099/web-search/v1/query_task" \
 | `source_type` | 来源类型，Web 检索结果为 `"web"` |
 | `discovery_backend` | 底层发现引擎，例如 `"exa"` |
 
-### `artifact_json_path` 与 `artifact_markdown_path`
+### `artifact_json_path`、`artifact_record_id` 与 `artifact_markdown_path`
 
 每次检索都会自动落盘：
 
-- 一份 JSON
-- 一份 Markdown
+- 一份追加到统一 JSON 历史文件中的结构化记录
+- 一份独立 Markdown 文件
 
 默认目录：
 
@@ -515,11 +522,70 @@ curl -s -G "http://127.0.0.1:8099/web-search/v1/query_task" \
 script/outputs
 ```
 
+默认 JSON 历史文件：
+
+```text
+script/outputs/search_history.json
+```
+
+其中：
+
+| 字段 | 说明 |
+|------|------|
+| `artifact_json_path` | 统一 JSON 历史文件路径 |
+| `artifact_record_id` | 本次检索在历史文件中的记录 ID；异步任务默认等于 `task_id` |
+| `artifact_markdown_path` | 本次检索对应的独立 Markdown 文件路径 |
+| `api_key` | masked API key，例如 `sk-xxx...abcd` |
+| `api_key_hash` | API key 的 SHA-256 哈希，用于服务端隔离查询 |
+
 服务端可以据此做：
 
 - 历史追踪
 - 调试回放
 - 结果审计
+
+---
+
+## 历史记录查询
+
+查询当前 API key 产生过的检索记录：
+
+```bash
+curl -G "http://127.0.0.1:8099/web-search/v1/history" \
+  -H "Authorization: Bearer sk-your-api-key" \
+  --data-urlencode "limit=20" \
+  --data-urlencode "offset=0"
+```
+
+返回示例：
+
+```json
+{
+  "code": 0,
+  "message": "OK",
+  "data": {
+    "total": 1,
+    "limit": 20,
+    "offset": 0,
+    "records": [
+      {
+        "query": "中国土地财政 2021 年土地出让收入 房产税改革 官方数据",
+        "model": "roma-web-search",
+        "content": "检索报告\n...",
+        "roma_result": {},
+        "artifact_json_path": "/path/to/outputs/search_history.json",
+        "artifact_markdown_path": "/path/to/outputs/20260515T061117Z_xxx.md",
+        "artifact_record_id": "20260515T061117Z_xxx_query",
+        "api_key": "sk-you...-key",
+        "api_key_hash": "..."
+      }
+    ]
+  },
+  "requestId": "..."
+}
+```
+
+该接口只返回当前请求 API key 的历史记录。不同 key 创建的异步任务也无法互相查询。
 
 ---
 
