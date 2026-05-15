@@ -163,7 +163,7 @@ class WebSearchService:
             return self._toolkit
 
     def _prepare_runtime_environment(self) -> None:
-        # A single .env in web_api/script is enough for server deployment.
+        # A single .env in the standalone script bundle is enough for deployment.
         _load_env_file(self.settings.project_root / ".env")
 
         runtime_paths = {

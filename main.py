@@ -1,6 +1,6 @@
 """Compatibility entrypoint.
 
-The deployable API backend now lives under ``web_api/script``.  This module is
+The deployable API backend now lives under ``script/``.  This module is
 kept so existing commands such as ``uvicorn web_api.main:app`` continue to work.
 """
 

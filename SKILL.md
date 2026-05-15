@@ -14,27 +14,56 @@ Use this skill when a task needs web-search results from the ROMA search stack t
 - Prefer reading credentials from `ROMA_WEB_SEARCH_API_KEY`.
 - Prefer reading the API base URL from `ROMA_WEB_SEARCH_BASE_URL`.
 - Authenticate with `Authorization: Bearer <api_key>` or `X-API-Key: <api_key>`.
-- Local development keys may be stored in `web_api/script/api_keys.txt`; do not expose real keys in final user-facing answers.
+- Local development keys may be stored in `script/api_keys.txt`; do not expose real keys in final user-facing answers.
 - The full API reference is at `API_Reference.md`.
 - The deployable backend bundle is `script/`.
+- This skill bundles a stdlib-only helper at `scripts/roma_web_search_client.py`; prefer it for routine health/sync/stream/async checks.
+- Detailed API docs are also available at `references/api-reference.md`; read that file when endpoint schemas or integration details are needed.
+
+## Bundled Helper
+
+Use the bundled client to avoid rewriting curl requests:
+
+```bash
+python scripts/roma_web_search_client.py --help
+```
+
+Common commands:
+
+```bash
+python scripts/roma_web_search_client.py health
+
+python scripts/roma_web_search_client.py sync \
+  "中国土地财政 2021 年土地出让收入 房产税改革 官方数据" \
+  --top-n 12
+
+python scripts/roma_web_search_client.py stream \
+  "差别税率 房地产税 理论依据 优缺点" \
+  --top-n 8
+
+python scripts/roma_web_search_client.py create-task \
+  "Singapore IT2000 intelligent island National Information Infrastructure" \
+  --top-n 12
+
+python scripts/roma_web_search_client.py poll <task_id> --wait
+```
 
 ## Health Check
 
 Before debugging requests, verify that the API server is reachable:
 
 ```bash
-BASE_URL="${ROMA_WEB_SEARCH_BASE_URL:-http://127.0.0.1:8099}"
-curl -s "$BASE_URL/healthz"
+python scripts/roma_web_search_client.py health
 ```
 
-If the server is not running locally, start it from the workspace that contains `web_api`:
+If the server is not running locally, start it from the cloned skill/repository root:
 
 ```bash
 cd script
 python run_server.py
 ```
 
-The old compatibility command still works from the repository parent:
+When this repository is used as a Python package from its parent directory, the old compatibility command also works:
 
 ```bash
 python -m uvicorn web_api.main:app --host 127.0.0.1 --port 8099
@@ -162,7 +191,7 @@ The task store is in memory by default. If the API server restarts, old task IDs
 
 ## Deployment Bundle
 
-For server deployment, copy `web_api/script` as the backend package. It contains:
+For server deployment, copy `script/` as the backend package. It contains:
 
 - `roma_web_search_api/`: FastAPI app and API service code.
 - `vendor/ROMA_v2/src/`: ROMA runtime source snapshot.
@@ -175,7 +204,7 @@ For server deployment, copy `web_api/script` as the backend package. It contains
 On a server, prefer:
 
 ```bash
-cd /path/to/script
+cd /path/to/roma-web-search
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt

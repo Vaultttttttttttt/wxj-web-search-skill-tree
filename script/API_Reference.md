@@ -57,7 +57,7 @@
 服务启动时会读取本地白名单文件：
 
 ```text
-web_api/script/api_keys.txt
+script/api_keys.txt
 ```
 
 默认实现中每行一个 key，例如：
@@ -512,7 +512,7 @@ curl -s -G "http://127.0.0.1:8099/web-search/v1/query_task" \
 默认目录：
 
 ```text
-web_api/script/outputs
+script/outputs
 ```
 
 服务端可以据此做：
@@ -642,7 +642,7 @@ print(resp.choices[0].message.content)
 
 ### 结论先说
 
-现在推荐把 **`web_api/script/` 作为唯一后端部署目录**。
+现在推荐把 **`script/` 作为唯一后端部署目录**。
 
 该目录已经集中包含：
 
@@ -658,7 +658,7 @@ print(resp.choices[0].message.content)
 服务器部署时，优先只上传：
 
 ```text
-web_api/script/
+script/
 ```
 
 旧入口 `web_api.main` 仍然可用，但只是兼容转发；真正的后端代码与依赖都已经集中到 `script` 内。
@@ -668,7 +668,7 @@ web_api/script/
 在服务器上：
 
 ```bash
-cd /path/to/script
+cd roma-web-search
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -684,7 +684,7 @@ uvicorn roma_web_search_api.main:app --host 0.0.0.0 --port 8099
 
 ### 必要环境变量
 
-可参考 `web_api/script/.env.example`。若不设置路径变量，服务默认使用 `script` 内部的相对目录。
+可参考 `script/.env.example`。若不设置路径变量，服务默认使用 `script` 内部的相对目录。
 
 | 变量 | 作用 |
 |------|------|

@@ -5,7 +5,7 @@
 现在后端已经集中为一个可部署目录：
 
 ```text
-web_api/script/
+script/
 ```
 
 服务器部署时优先只上传这个目录。旧的 `web_api.main` 入口仍可用，但只是兼容转发，真正的 API 代码、ROMA 源码快照、Web Search 技能树、Union Search、News Aggregator 和学术检索辅助 skill 都在 `script` 下面。
@@ -22,6 +22,15 @@ web_api/script/
 ```text
 web_api/API_Reference.md
 ```
+
+作为 Codex skill 使用时，仓库还包含：
+
+```text
+scripts/roma_web_search_client.py
+references/api-reference.md
+```
+
+因此可以直接把本仓库 clone 到 `~/.codex/skills/roma-web-search-api`，重启 Codex 后使用。
 
 本地调试 UI：
 
@@ -219,4 +228,4 @@ curl -X POST "http://127.0.0.1:8099/web-search/v1/query_task" \
 
 这套服务默认走 `AdaptiveRetrieveToolkit(default_mode="web", web_backend="skill_tree")`，因此输出会复用 ROMA 当前的 Web Search 技能树、union search、RSS fallback、news aggregator 以及学术/政策路由逻辑。
 
-启动后可用 `/healthz` 检查当前加载的部署路径。正常情况下，`package_root`、`roma_src_root`、`skill_root`、`union_search_root`、`news_aggregator_root` 都应指向 `web_api/script` 内部。
+启动后可用 `/healthz` 检查当前加载的部署路径。正常情况下，`package_root`、`roma_src_root`、`skill_root`、`union_search_root`、`news_aggregator_root` 都应指向 `script` 内部。

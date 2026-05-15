@@ -1,6 +1,6 @@
 # ROMA Web Search API Standalone Bundle
 
-`web_api/script` is the deployable backend bundle. It contains the API server, the ROMA retrieval source snapshot, and the local web-search skills used by the API.
+`script` is the deployable backend bundle. It contains the API server, the ROMA retrieval source snapshot, and the local web-search skills used by the API.
 
 ## Layout
 

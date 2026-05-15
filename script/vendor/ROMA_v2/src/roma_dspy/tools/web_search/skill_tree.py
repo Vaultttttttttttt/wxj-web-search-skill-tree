@@ -20,7 +20,7 @@ from roma_dspy.tools.base.base import BaseToolkit
 
 
 def _discover_bundle_root() -> Path:
-    """Find the standalone web_api/script bundle root from this vendored file."""
+    """Find the standalone script bundle root from this vendored file."""
     for parent in Path(__file__).resolve().parents:
         if (parent / "skills" / "web-search-innospark-tree").exists():
             return parent
