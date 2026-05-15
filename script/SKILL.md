@@ -199,6 +199,19 @@ cp .env.example .env
 python run_server.py
 ```
 
+Docker is optional. The API has no required Redis/PostgreSQL/RAGFlow sidecar in
+the current deployment. If a server team wants containerized startup:
+
+```bash
+cp .env.example .env
+cp api_keys.example.txt api_keys.txt
+mkdir -p outputs
+docker compose up -d --build
+```
+
+Read `DOCKER.md` before changing the container setup. It documents the volume
+mapping for `outputs/` and `api_keys.txt`.
+
 After startup, use `/healthz` and verify that `package_root`, `roma_src_root`, `skill_root`, `union_search_root`, and `news_aggregator_root` all point inside the deployed `script` directory.
 
 ## Response Interpretation

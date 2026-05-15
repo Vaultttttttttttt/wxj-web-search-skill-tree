@@ -101,6 +101,30 @@ cd script
 uvicorn roma_web_search_api.main:app --host 0.0.0.0 --port 8099
 ```
 
+### 可选：Docker 启动
+
+当前 Web Search API **不强制依赖 Docker**，也不需要 Redis、PostgreSQL、RAGFlow 等额外容器。Docker 只是为了服务器部署时环境更稳定。
+
+```bash
+cd script
+cp .env.example .env
+cp api_keys.example.txt api_keys.txt
+mkdir -p outputs
+docker compose up -d --build
+```
+
+容器内默认写入 `/app/outputs`，宿主机通过 volume 挂载到：
+
+```text
+script/outputs
+```
+
+详细说明见：
+
+```text
+script/DOCKER.md
+```
+
 ### 兼容：旧入口启动
 
 旧命令仍然可用：

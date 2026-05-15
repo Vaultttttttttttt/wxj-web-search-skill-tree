@@ -54,6 +54,34 @@ Equivalent uvicorn command:
 uvicorn roma_web_search_api.main:app --host 0.0.0.0 --port 8099
 ```
 
+## Docker
+
+Docker is optional. The current Web Search API does not require Redis,
+PostgreSQL, RAGFlow, or other sidecar containers.
+
+```bash
+cp .env.example .env
+cp api_keys.example.txt api_keys.txt
+mkdir -p outputs
+docker compose up -d --build
+```
+
+Container paths:
+
+```text
+/app/outputs/search_history.json
+/app/api_keys.txt
+```
+
+Host paths:
+
+```text
+script/outputs/search_history.json
+script/api_keys.txt
+```
+
+See `DOCKER.md` for the full checklist.
+
 ## Check
 
 ```bash

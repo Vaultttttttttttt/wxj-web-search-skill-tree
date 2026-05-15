@@ -748,6 +748,51 @@ python run_server.py
 uvicorn roma_web_search_api.main:app --host 0.0.0.0 --port 8099
 ```
 
+### 可选 Docker 部署
+
+Docker 不是当前 Web Search API 的必需依赖。默认部署不需要 Redis、PostgreSQL、RAGFlow 或其他 sidecar 容器；Docker 只用于打包 Python 运行环境。
+
+`script/` 下已经提供：
+
+```text
+Dockerfile
+docker-compose.yml
+.dockerignore
+DOCKER.md
+```
+
+在服务器上：
+
+```bash
+cd roma-web-search
+cp .env.example .env
+cp api_keys.example.txt api_keys.txt
+mkdir -p outputs
+docker compose up -d --build
+```
+
+检查：
+
+```bash
+curl -s http://127.0.0.1:8099/healthz | jq .
+```
+
+若采用 Docker，容器内路径通常是：
+
+```text
+/app/outputs/search_history.json
+/app/api_keys.txt
+```
+
+宿主机对应：
+
+```text
+script/outputs/search_history.json
+script/api_keys.txt
+```
+
+完整 Docker 注意事项见 `script/DOCKER.md`。
+
 ### 必要环境变量
 
 可参考 `script/.env.example`。若不设置路径变量，服务默认使用 `script` 内部的相对目录。

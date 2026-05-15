@@ -1,0 +1,21 @@
+services:
+  roma-web-search:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: roma-web-search-api:latest
+    container_name: roma-web-search-api
+    ports:
+      - "${WEB_API_PORT:-8099}:8099"
+    env_file:
+      - .env
+    environment:
+      WEB_API_HOST: 0.0.0.0
+      WEB_API_PORT: 8099
+      WEB_API_ARTIFACT_DIR: ./outputs
+      WEB_API_HISTORY_FILE: ./outputs/search_history.json
+      WEB_API_KEYS_FILE: ./api_keys.txt
+    volumes:
+      - ./outputs:/app/outputs
+      - ./api_keys.txt:/app/api_keys.txt:ro
+    restart: unless-stopped
