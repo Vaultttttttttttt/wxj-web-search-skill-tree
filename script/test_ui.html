@@ -3,21 +3,37 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ROMA Web Search API Test UI</title>
+  <title>ROMA Web Search API Console</title>
   <style>
     :root {
       color-scheme: light;
-      --bg: #f6f7f9;
-      --panel: #ffffff;
-      --text: #1c2430;
-      --muted: #667085;
-      --line: #d7dce3;
-      --accent: #1769aa;
-      --accent-strong: #0d4f87;
-      --good: #0b7a4b;
-      --warn: #a15c00;
-      --bad: #b42318;
-      --code: #111827;
+      --iaie-color-primary: #555AFF;
+      --iaie-color-secondary: #8C55FF;
+      --iaie-color-info: #3782FF;
+      --iaie-color-success: #1EB478;
+      --iaie-color-warning: #FFB400;
+      --iaie-color-danger: #F02D2D;
+      --iaie-color-primary-hover: #4E53EB;
+      --iaie-color-primary-active: #474CD6;
+      --iaie-color-success-soft: #E8F8F2;
+      --iaie-color-warning-soft: #FFF8E6;
+      --iaie-color-danger-soft: #FEEAEA;
+      --iaie-color-info-soft: #EBF2FF;
+      --iaie-text-1: rgba(10, 10, 40, 1);
+      --iaie-text-2: rgba(10, 10, 40, 0.8);
+      --iaie-text-3: rgba(10, 10, 40, 0.55);
+      --iaie-text-4: rgba(10, 10, 40, 0.4);
+      --iaie-bg-page: #F7F8FF;
+      --iaie-bg-card: #FFFFFF;
+      --iaie-bg-muted: #F5F7FC;
+      --iaie-bg-primary-soft: #EEEEFF;
+      --iaie-border-default: rgba(10, 10, 40, 0.1);
+      --iaie-border-strong: rgba(10, 10, 40, 0.18);
+      --iaie-shadow-sm: 0 4px 12px rgba(10, 10, 40, 0.06);
+      --iaie-shadow-md: 0 8px 24px rgba(10, 10, 40, 0.08);
+      --iaie-shadow-lg: 0 16px 40px rgba(10, 10, 40, 0.12);
+      --code-bg: #101326;
+      --code-text: #E7EAF8;
     }
 
     * {
@@ -26,20 +42,25 @@
 
     body {
       margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: 15px;
-      line-height: 1.5;
+      background:
+        linear-gradient(180deg, rgba(238, 238, 255, 0.72) 0, rgba(247, 248, 255, 0) 320px),
+        var(--iaie-bg-page);
+      color: var(--iaie-text-1);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC",
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.55;
+      letter-spacing: 0;
     }
 
     header {
-      border-bottom: 1px solid var(--line);
-      background: var(--panel);
+      border-bottom: 1px solid var(--iaie-border-default);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px);
     }
 
     .wrap {
-      width: min(1180px, calc(100% - 32px));
+      width: min(1200px, calc(100% - 48px));
       margin: 0 auto;
     }
 
@@ -47,206 +68,356 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      min-height: 72px;
+      gap: 24px;
+      min-height: 80px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      min-width: 88px;
+      height: 40px;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--iaie-color-primary), var(--iaie-color-secondary));
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 0 14px;
+      box-shadow: 0 10px 24px rgba(85, 90, 255, 0.22);
+    }
+
+    .eyebrow {
+      margin-bottom: 2px;
+      color: var(--iaie-color-primary);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
     }
 
     h1 {
-      margin: 0;
-      font-size: 22px;
-      font-weight: 720;
-      letter-spacing: 0;
+      color: var(--iaie-text-1);
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 32px;
     }
 
     .subtitle {
       margin-top: 4px;
-      color: var(--muted);
-      font-size: 13px;
+      color: var(--iaie-text-3);
+      font-size: 14px;
+      line-height: 22px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     main {
-      padding: 24px 0 36px;
+      padding: 32px 0 48px;
     }
 
     .layout {
       display: grid;
-      grid-template-columns: 380px 1fr;
-      gap: 18px;
+      grid-template-columns: minmax(340px, 408px) 1fr;
+      gap: 24px;
       align-items: start;
     }
 
     section {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 16px;
+      background: var(--iaie-bg-card);
+      border: 1px solid var(--iaie-border-default);
+      border-radius: 16px;
+      box-shadow: var(--iaie-shadow-sm);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid var(--iaie-border-default);
+      background: linear-gradient(180deg, #FFFFFF 0%, #FBFCFF 100%);
     }
 
     h2 {
-      margin: 0 0 14px;
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 0;
+      color: var(--iaie-text-1);
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 28px;
+    }
+
+    .panel-desc {
+      margin-top: 4px;
+      color: var(--iaie-text-3);
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .panel-body {
+      padding: 22px 24px 24px;
+    }
+
+    .field-group {
+      display: grid;
+      gap: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
     }
 
     label {
-      display: block;
-      margin: 12px 0 6px;
-      color: #344054;
-      font-size: 13px;
-      font-weight: 650;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--iaie-text-2);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 22px;
     }
 
     input,
     textarea {
       width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      padding: 9px 10px;
-      color: var(--text);
+      min-height: 40px;
+      border: 1px solid var(--iaie-border-default);
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: var(--iaie-text-1);
       background: #fff;
       font: inherit;
       outline: none;
+      transition: border-color 160ms cubic-bezier(0.2, 0, 0, 1), box-shadow 160ms cubic-bezier(0.2, 0, 0, 1);
     }
 
     textarea {
-      min-height: 124px;
+      min-height: 132px;
       resize: vertical;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--iaie-text-4);
     }
 
     input:focus,
     textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(23, 105, 170, 0.12);
+      border-color: var(--iaie-color-primary);
+      box-shadow: 0 0 0 3px rgba(85, 90, 255, 0.14);
     }
 
     .grid2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 12px;
     }
 
     .actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 16px;
+      gap: 12px;
+      margin-top: 18px;
     }
 
     button {
-      min-height: 38px;
-      border: 1px solid var(--accent);
-      border-radius: 6px;
-      background: var(--accent);
+      min-height: 40px;
+      border: 1px solid var(--iaie-color-primary);
+      border-radius: 8px;
+      background: var(--iaie-color-primary);
       color: #fff;
       font: inherit;
-      font-weight: 700;
+      font-weight: 500;
       cursor: pointer;
+      transition: transform 120ms ease-out, background-color 120ms ease-out, border-color 120ms ease-out, box-shadow 120ms ease-out;
     }
 
     button.secondary {
       background: #fff;
-      color: var(--accent);
+      color: var(--iaie-color-primary);
+      border-color: rgba(85, 90, 255, 0.38);
+    }
+
+    button:hover {
+      background: var(--iaie-color-primary-hover);
+      border-color: var(--iaie-color-primary-hover);
+      box-shadow: 0 8px 18px rgba(85, 90, 255, 0.18);
+      transform: translateY(-1px);
+    }
+
+    button.secondary:hover {
+      background: var(--iaie-bg-primary-soft);
+      color: var(--iaie-color-primary-hover);
+      box-shadow: none;
+    }
+
+    button:active {
+      background: var(--iaie-color-primary-active);
+      border-color: var(--iaie-color-primary-active);
+      transform: translateY(0);
+    }
+
+    button:focus-visible {
+      outline: 0;
+      box-shadow: 0 0 0 3px rgba(85, 90, 255, 0.2);
     }
 
     button:disabled {
       cursor: wait;
-      opacity: 0.62;
+      opacity: 0.58;
+      transform: none;
+      box-shadow: none;
     }
 
     .status-row {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 18px;
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
+      gap: 6px;
       min-height: 28px;
       border-radius: 999px;
       padding: 0 10px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--iaie-border-default);
       background: #fff;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 650;
+      color: var(--iaie-text-3);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    .badge::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: currentColor;
+      opacity: 0.55;
     }
 
     .badge.good {
-      border-color: rgba(11, 122, 75, 0.25);
-      background: rgba(11, 122, 75, 0.08);
-      color: var(--good);
+      border-color: rgba(30, 180, 120, 0.24);
+      background: var(--iaie-color-success-soft);
+      color: var(--iaie-color-success);
     }
 
     .badge.warn {
-      border-color: rgba(161, 92, 0, 0.25);
-      background: rgba(161, 92, 0, 0.08);
-      color: var(--warn);
+      border-color: rgba(255, 180, 0, 0.34);
+      background: var(--iaie-color-warning-soft);
+      color: #A66F00;
     }
 
     .badge.bad {
-      border-color: rgba(180, 35, 24, 0.25);
-      background: rgba(180, 35, 24, 0.08);
-      color: var(--bad);
+      border-color: rgba(240, 45, 45, 0.22);
+      background: var(--iaie-color-danger-soft);
+      color: var(--iaie-color-danger);
+    }
+
+    .badge.info {
+      border-color: rgba(55, 130, 255, 0.22);
+      background: var(--iaie-color-info-soft);
+      color: var(--iaie-color-info);
     }
 
     .result-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      margin-bottom: 14px;
+      gap: 12px;
+      margin-bottom: 18px;
     }
 
     .metric {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 11px;
-      background: #fbfcfd;
+      min-height: 88px;
+      border: 1px solid var(--iaie-border-default);
+      border-radius: 12px;
+      padding: 14px;
+      background: var(--iaie-bg-muted);
     }
 
     .metric .k {
-      color: var(--muted);
+      color: var(--iaie-text-3);
       font-size: 12px;
-      font-weight: 650;
+      font-weight: 500;
+      line-height: 20px;
     }
 
     .metric .v {
       margin-top: 4px;
-      font-size: 17px;
-      font-weight: 760;
+      color: var(--iaie-text-1);
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 28px;
       overflow-wrap: anywhere;
+      font-variant-numeric: tabular-nums;
     }
 
     pre {
       overflow: auto;
       max-height: 540px;
       margin: 0;
-      border-radius: 8px;
-      padding: 14px;
-      background: var(--code);
-      color: #d8dee9;
+      border-radius: 12px;
+      padding: 16px;
+      background: var(--code-bg);
+      color: var(--code-text);
       font-size: 13px;
       line-height: 1.45;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
     }
 
     .log {
-      min-height: 240px;
+      min-height: 320px;
     }
 
     .note {
-      color: var(--muted);
+      color: var(--iaie-text-3);
       font-size: 13px;
-      margin-top: 10px;
+      line-height: 20px;
+      margin-top: 12px;
+    }
+
+    code {
+      color: var(--iaie-color-primary);
+      background: var(--iaie-bg-primary-soft);
+      border-radius: 6px;
+      padding: 1px 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
     }
 
     .task-list {
       display: grid;
       gap: 8px;
-      margin-top: 14px;
+      margin-top: 8px;
     }
 
     .task-item {
@@ -255,19 +426,22 @@
       gap: 8px;
       width: 100%;
       min-height: auto;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 10px;
-      background: #fbfcfd;
-      color: var(--text);
+      border: 1px solid var(--iaie-border-default);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      color: var(--iaie-text-1);
       text-align: left;
-      font-weight: 500;
+      font-weight: 400;
+      box-shadow: none;
     }
 
     .task-item:hover,
     .task-item.selected {
-      border-color: var(--accent);
-      background: rgba(23, 105, 170, 0.06);
+      border-color: rgba(85, 90, 255, 0.38);
+      background: var(--iaie-bg-primary-soft);
+      transform: none;
+      box-shadow: none;
     }
 
     .task-main {
@@ -277,13 +451,13 @@
     .task-id {
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 12px;
-      font-weight: 750;
+      font-weight: 600;
       overflow-wrap: anywhere;
     }
 
     .task-query {
       margin-top: 4px;
-      color: var(--muted);
+      color: var(--iaie-text-3);
       font-size: 12px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -294,12 +468,43 @@
       display: grid;
       gap: 4px;
       justify-items: end;
-      color: var(--muted);
+      color: var(--iaie-text-3);
       font-size: 12px;
       white-space: nowrap;
     }
 
+    .section-label {
+      margin: 20px 0 8px;
+      color: var(--iaie-text-2);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 22px;
+    }
+
+    .helper-card {
+      border: 1px solid var(--iaie-border-default);
+      border-radius: 12px;
+      padding: 12px;
+      background: var(--iaie-bg-muted);
+    }
+
+    .toolbar-caption {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border-radius: 999px;
+      padding: 0 10px;
+      background: var(--iaie-bg-muted);
+      color: var(--iaie-text-3);
+      font-size: 12px;
+      line-height: 20px;
+    }
+
     @media (max-width: 900px) {
+      .wrap {
+        width: min(100% - 32px, 1200px);
+      }
+
       .layout,
       .result-grid,
       .grid2,
@@ -312,90 +517,130 @@
         flex-direction: column;
         padding: 16px 0;
       }
+
+      .header-actions {
+        justify-content: flex-start;
+      }
+
+      .panel-head,
+      .panel-body {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
     }
   </style>
 </head>
 <body>
   <header>
     <div class="wrap topbar">
-      <div>
-        <h1>ROMA Web Search API Test UI</h1>
-        <div class="subtitle">同源测试页：健康检查、同步、流式、异步任务轮询</div>
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">InnoSpark</div>
+        <div>
+          <div class="eyebrow">Web Search API Console</div>
+          <h1>检索接口测试台</h1>
+          <div class="subtitle">用于验证健康检查、同步调用、流式输出与异步任务轮询。</div>
+        </div>
       </div>
-      <span id="serverBadge" class="badge">未检查服务</span>
+      <div class="header-actions">
+        <span class="toolbar-caption">Local QA</span>
+        <span id="serverBadge" class="badge">未检查服务</span>
+      </div>
     </div>
   </header>
 
   <main class="wrap">
     <div class="layout">
       <section>
-        <h2>请求参数</h2>
-
-        <label for="baseUrl">Base URL</label>
-        <input id="baseUrl" value="">
-
-        <label for="apiKey">API Key</label>
-        <input id="apiKey" value="sk-your-api-key">
-
-        <label for="query">查询问题</label>
-        <textarea id="query">检索中国土地财政 2021 年土地出让收入 房产税改革 官方数据</textarea>
-
-        <div class="grid2">
+        <div class="panel-head">
           <div>
-            <label for="topN">top_n</label>
-            <input id="topN" type="number" min="1" max="200" value="5">
+            <h2>请求配置</h2>
+            <p class="panel-desc">填入 API 地址、调用密钥和检索问题后即可发起测试。</p>
           </div>
-          <div>
-            <label for="taskId">异步 task_id</label>
-            <input id="taskId" placeholder="创建任务后自动填入">
+          <span class="badge info">Ready</span>
+        </div>
+        <div class="panel-body">
+          <div class="field-group">
+            <div class="field">
+              <label for="baseUrl">Base URL</label>
+              <input id="baseUrl" value="" aria-label="API Base URL">
+            </div>
+
+            <div class="field">
+              <label for="apiKey">API Key</label>
+              <input id="apiKey" value="sk-your-api-key" aria-label="API Key">
+            </div>
+
+            <div class="field">
+              <label for="query">查询问题</label>
+              <textarea id="query" aria-label="查询问题">检索中国土地财政 2021 年土地出让收入 房产税改革 官方数据</textarea>
+            </div>
+
+            <div class="grid2">
+              <div class="field">
+                <label for="topN">top_n</label>
+                <input id="topN" type="number" min="1" max="200" value="5">
+              </div>
+              <div class="field">
+                <label for="taskId">异步 task_id</label>
+                <input id="taskId" placeholder="创建任务后自动填入">
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div class="actions">
-          <button id="healthBtn" class="secondary">健康检查</button>
-          <button id="syncBtn">同步请求</button>
-          <button id="streamBtn" class="secondary">流式请求</button>
-          <button id="asyncBtn">创建异步任务</button>
-          <button id="pollBtn" class="secondary">查询任务</button>
-          <button id="pollAllBtn" class="secondary">查询全部任务</button>
-          <button id="autoPollBtn" class="secondary">自动轮询</button>
-        </div>
+          <div class="actions" aria-label="测试动作">
+            <button id="healthBtn" class="secondary">健康检查</button>
+            <button id="syncBtn">同步请求</button>
+            <button id="streamBtn" class="secondary">流式请求</button>
+            <button id="asyncBtn">创建异步任务</button>
+            <button id="pollBtn" class="secondary">查询任务</button>
+            <button id="pollAllBtn" class="secondary">查询全部任务</button>
+            <button id="autoPollBtn" class="secondary">自动轮询</button>
+          </div>
 
-        <label>异步任务列表</label>
-        <div id="taskList" class="task-list">
-          <div class="note">还没有创建任务。</div>
-        </div>
+          <div class="section-label">异步任务列表</div>
+          <div id="taskList" class="task-list">
+            <div class="note helper-card">还没有创建任务。</div>
+          </div>
 
-        <div class="note">
-          如果通过 <code>/test-ui</code> 打开，本页面与 API 同源，不需要额外配置 CORS。
+          <div class="note helper-card">
+            如果通过 <code>/test-ui</code> 打开，本页面与 API 同源，不需要额外配置 CORS。
+          </div>
         </div>
       </section>
 
       <section>
-        <h2>测试结果</h2>
-        <div class="status-row">
-          <span id="authBadge" class="badge">鉴权未测</span>
-          <span id="syncBadge" class="badge">同步未测</span>
-          <span id="streamBadge" class="badge">流式未测</span>
-          <span id="asyncBadge" class="badge">异步未测</span>
+        <div class="panel-head">
+          <div>
+            <h2>响应结果</h2>
+            <p class="panel-desc">实时展示接口状态、结果数量、耗时和原始响应体。</p>
+          </div>
+          <span class="toolbar-caption">JSON / SSE</span>
         </div>
+        <div class="panel-body">
+          <div class="status-row">
+            <span id="authBadge" class="badge">鉴权未测</span>
+            <span id="syncBadge" class="badge">同步未测</span>
+            <span id="streamBadge" class="badge">流式未测</span>
+            <span id="asyncBadge" class="badge">异步未测</span>
+          </div>
 
-        <div class="result-grid">
-          <div class="metric">
-            <div class="k">HTTP / 状态</div>
-            <div id="statusValue" class="v">-</div>
+          <div class="result-grid">
+            <div class="metric">
+              <div class="k">HTTP / 状态</div>
+              <div id="statusValue" class="v">-</div>
+            </div>
+            <div class="metric">
+              <div class="k">结果数量</div>
+              <div id="countValue" class="v">-</div>
+            </div>
+            <div class="metric">
+              <div class="k">耗时</div>
+              <div id="durationValue" class="v">-</div>
+            </div>
           </div>
-          <div class="metric">
-            <div class="k">结果数量</div>
-            <div id="countValue" class="v">-</div>
-          </div>
-          <div class="metric">
-            <div class="k">耗时</div>
-            <div id="durationValue" class="v">-</div>
-          </div>
+
+          <pre id="output" class="log">点击左侧按钮开始测试。</pre>
         </div>
-
-        <pre id="output" class="log">点击左侧按钮开始测试。</pre>
       </section>
     </div>
   </main>
