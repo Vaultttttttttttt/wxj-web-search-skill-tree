@@ -77,6 +77,81 @@ script/outputs
 
 ## 安装与启动
 
+### 新服务器从零部署 Checklist
+
+推荐直接在服务器上 clone 仓库，然后只进入 `script/` 运行服务：
+
+```bash
+git clone https://github.com/Vaultttttttttttt/wxj-web-search-skill-tree.git
+cd wxj-web-search-skill-tree/script
+```
+
+准备 Python 环境：
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+准备配置文件、调用方 API key 和输出目录：
+
+```bash
+cp .env.example .env
+cp api_keys.example.txt api_keys.txt
+mkdir -p outputs
+```
+
+然后编辑：
+
+```text
+.env
+api_keys.txt
+```
+
+至少需要：
+
+- 在 `.env` 中填入检索供应商 key，例如 `TAVILY_API_KEY`。
+- 在 `api_keys.txt` 中写允许调用本服务的 key，每行一个，例如 `sk-team-user-001`。
+
+启动服务：
+
+```bash
+python run_server.py
+```
+
+启动后检查：
+
+```bash
+curl -s http://127.0.0.1:8099/healthz | jq .
+```
+
+确认返回中的这些路径都指向服务器上的当前 `script` 目录：
+
+```text
+package_root
+artifact_dir
+history_file
+api_keys_file
+roma_src_root
+skill_root
+union_search_root
+news_aggregator_root
+```
+
+浏览器测试页：
+
+```text
+http://<server-host>:8099/test-ui
+```
+
+默认落盘位置：
+
+```text
+script/outputs/search_history.json
+script/outputs/*.md
+```
+
 ### 推荐：独立部署包启动
 
 ```bash

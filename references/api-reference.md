@@ -734,13 +734,21 @@ script/
 在服务器上：
 
 ```bash
-cd roma-web-search
-python -m venv .venv
+git clone https://github.com/Vaultttttttttttt/wxj-web-search-skill-tree.git
+cd wxj-web-search-skill-tree/script
+python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
+cp api_keys.example.txt api_keys.txt
+mkdir -p outputs
 python run_server.py
 ```
+
+启动前需要编辑 `.env` 与 `api_keys.txt`：
+
+- `.env` 放检索供应商 key，例如 `TAVILY_API_KEY`。
+- `api_keys.txt` 放调用本 API 的白名单 key，每行一个。
 
 也可以直接使用：
 

@@ -24,29 +24,41 @@ script/
 
 ## Deploy
 
-Copy only this folder to the server if the Python dependencies are available:
+Fresh server path:
 
 ```bash
-scp -r . user@server:roma-web-search
+git clone https://github.com/Vaultttttttttttt/wxj-web-search-skill-tree.git
+cd wxj-web-search-skill-tree/script
 ```
 
-On the server:
+Create the Python environment:
 
 ```bash
-cd roma-web-search
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env
 ```
 
-Fill `.env` with provider keys such as `TAVILY_API_KEY`, then put allowed caller keys in `api_keys.txt`.
+Create runtime config:
+
+```bash
+cp .env.example .env
+cp api_keys.example.txt api_keys.txt
+mkdir -p outputs
+```
+
+Fill `.env` with provider keys such as `TAVILY_API_KEY`, then put allowed
+caller keys in `api_keys.txt`, one key per line.
 
 Start:
 
 ```bash
 python run_server.py
 ```
+
+If you prefer copying only the backend bundle instead of cloning the full repo,
+copy this `script/` folder to the server and run the same commands from that
+folder.
 
 Equivalent uvicorn command:
 
