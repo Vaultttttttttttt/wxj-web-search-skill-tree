@@ -4,6 +4,7 @@ pydantic>=2.11.9
 pydantic-settings>=2.11.0
 dspy>=3.0.3
 loguru>=0.7.3
+networkx>=3.2,<4.0
 pyyaml>=6.0.0
 omegaconf>=2.3.0
 requests>=2.31,<3.0
