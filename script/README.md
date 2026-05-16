@@ -102,6 +102,24 @@ curl -s http://127.0.0.1:8099/healthz | jq .
 
 The health response should show paths under the deployed `script` directory, especially `package_root`, `roma_src_root`, `skill_root`, `union_search_root`, and `news_aggregator_root`.
 
+Check path/key/network readiness before judging source quality:
+
+```bash
+python scripts/check_search_environment.py --live
+```
+
+If key-based providers still look weak, run small API probes. This may consume a
+minimal amount of provider quota:
+
+```bash
+python scripts/check_search_environment.py --live --api-probe
+```
+
+If TCP/TLS checks fail for `DuckDuckGo`, `Google Scholar`, `GitHub API`, or
+provider API hosts, the server network is filtering or blocking those sources.
+In that case, configure `HTTP_PROXY`/`HTTPS_PROXY` in `.env` or run the service
+behind a machine/network that can reach those hosts.
+
 Open the test UI:
 
 ```text
