@@ -63,7 +63,7 @@ folder.
 Equivalent uvicorn command:
 
 ```bash
-uvicorn roma_web_search_api.main:app --host 0.0.0.0 --port 8110
+uvicorn roma_web_search_api.main:app --host 0.0.0.0 --port 8099
 ```
 
 ## Docker
@@ -97,10 +97,15 @@ See `DOCKER.md` for the full checklist.
 ## Check
 
 ```bash
-curl -s http://127.0.0.1:8110/healthz | jq .
+curl -s http://127.0.0.1:8099/healthz | jq .
 ```
 
 The health response should show paths under the deployed `script` directory, especially `package_root`, `roma_src_root`, `skill_root`, `union_search_root`, and `news_aggregator_root`.
+
+Runtime config is loaded from `script/.env` first. If that file does not exist
+and the backend is running inside a full repository checkout, the service falls
+back to the repository root `.env`. Check `config_env_file` in `/healthz` when
+debugging port or output-directory confusion.
 
 Check path/key/network readiness before judging source quality:
 
@@ -123,7 +128,7 @@ behind a machine/network that can reach those hosts.
 Open the test UI:
 
 ```text
-http://127.0.0.1:8110/test-ui
+http://127.0.0.1:8099/test-ui
 ```
 
 Searches write one Markdown file per request under `outputs/` and append the structured record to `outputs/search_history.json` by default. The JSON history stores a masked API key plus `api_key_hash`, so `/web-search/v1/history` can return only the current caller's records.
@@ -133,7 +138,7 @@ Searches write one Markdown file per request under `outputs/` and append the str
 Existing local commands still work from the parent workspace because `web_api.main` is now a thin compatibility wrapper:
 
 ```bash
-uvicorn web_api.main:app --host 127.0.0.1 --port 8110
+uvicorn web_api.main:app --host 127.0.0.1 --port 8099
 ```
 
 For server deployment, prefer `cd script && python run_server.py` so the backend does not depend on sibling folders outside `script`.

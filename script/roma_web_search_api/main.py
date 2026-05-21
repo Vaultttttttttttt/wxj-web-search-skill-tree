@@ -286,6 +286,7 @@ async def healthz() -> Dict[str, Any]:
         "compatibility_prefix": settings.compatibility_prefix,
         "artifact_dir": str(settings.artifact_dir.resolve()),
         "history_file": str(settings.history_file.resolve()),
+        "config_env_file": str(settings.env_file.resolve()) if settings.env_file else None,
         "package_root": str(settings.project_root.resolve()),
         "roma_src_root": str(settings.roma_src_root.resolve()),
         "skill_root": str(settings.skill_root.resolve()),

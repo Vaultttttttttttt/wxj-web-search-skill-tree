@@ -20,9 +20,23 @@ def _load_env(path: Path) -> None:
             os.environ[key] = value
 
 
+def _select_env_file(bundle_root: Path) -> Path | None:
+    bundle_env = bundle_root / ".env"
+    if bundle_env.exists():
+        return bundle_env
+
+    repo_env = bundle_root.parent / ".env"
+    if repo_env.exists():
+        return repo_env
+
+    return None
+
+
 if __name__ == "__main__":
     bundle_root = Path(__file__).resolve().parent
-    _load_env(bundle_root / ".env")
+    env_file = _select_env_file(bundle_root)
+    if env_file is not None:
+        _load_env(env_file)
 
     host = os.getenv("WEB_API_HOST", "0.0.0.0")
     port = int(os.getenv("WEB_API_PORT", "8099"))

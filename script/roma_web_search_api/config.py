@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 
 def _load_env_file_without_override(path: Path) -> None:
@@ -22,6 +22,28 @@ def _load_env_file_without_override(path: Path) -> None:
         value = value.strip().strip('"').strip("'")
         if key and key not in os.environ:
             os.environ[key] = value
+
+
+def _load_runtime_env(project_root: Path) -> Optional[Path]:
+    """Load the active deployment env file.
+
+    The standalone bundle lives in ``script/`` and should normally use
+    ``script/.env``. When someone runs the bundle from a full repository that
+    only has a root ``.env``, fall back to that file so port/path settings are
+    not silently ignored.
+    """
+
+    bundle_env = project_root / ".env"
+    if bundle_env.exists():
+        _load_env_file_without_override(bundle_env)
+        return bundle_env
+
+    repo_env = project_root.parent / ".env"
+    if repo_env.exists():
+        _load_env_file_without_override(repo_env)
+        return repo_env
+
+    return None
 
 
 def _env_int(name: str, default: int) -> int:
@@ -45,6 +67,7 @@ def _env_path(name: str, default: Path, base: Path) -> Path:
 @dataclass(frozen=True)
 class Settings:
     project_root: Path
+    env_file: Optional[Path]
     roma_src_root: Path
     skill_root: Path
     union_search_root: Path
@@ -74,7 +97,7 @@ class Settings:
 
 def load_settings() -> Settings:
     project_root = Path(__file__).resolve().parents[1]
-    _load_env_file_without_override(project_root / ".env")
+    env_file = _load_runtime_env(project_root)
     roma_src_root = _env_path(
         "ROMA_SRC_ROOT",
         project_root / "vendor" / "ROMA_v2" / "src",
@@ -84,6 +107,7 @@ def load_settings() -> Settings:
 
     return Settings(
         project_root=project_root,
+        env_file=env_file,
         roma_src_root=roma_src_root,
         skill_root=_env_path(
             "WEB_SEARCH_SKILL_ROOT",
