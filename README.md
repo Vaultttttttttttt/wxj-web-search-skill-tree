@@ -24,19 +24,18 @@ script/
 web_api/API_Reference.md
 ```
 
-作为 Codex skill 使用时，仓库还包含：
+Codex skill 已从后端项目中拆出，独立放在：
 
 ```text
-scripts/roma_web_search_client.py
-references/api-reference.md
+../web_api_skill/roma-web-search-api
 ```
 
-因此可以直接把本仓库 clone 到 `~/.codex/skills/roma-web-search-api`，重启 Codex 后使用。
+该 skill 只保留 Codex 使用所需的 `SKILL.md`、轻量客户端脚本和 API 参考；后端项目继续只负责服务代码、部署包和运行时依赖。
 
 本地调试 UI：
 
 ```text
-http://127.0.0.1:8099/test-ui
+http://127.0.0.1:8110/test-ui
 ```
 
 ## 返回语义
@@ -123,7 +122,7 @@ python run_server.py
 启动后检查：
 
 ```bash
-curl -s http://127.0.0.1:8099/healthz | jq .
+curl -s http://127.0.0.1:8110/healthz | jq .
 ```
 
 确认返回中的这些路径都指向服务器上的当前 `script` 目录：
@@ -142,7 +141,7 @@ news_aggregator_root
 浏览器测试页：
 
 ```text
-http://<server-host>:8099/test-ui
+http://<server-host>:8110/test-ui
 ```
 
 默认落盘位置：
@@ -173,7 +172,7 @@ script/api_keys.txt
 
 ```bash
 cd script
-uvicorn roma_web_search_api.main:app --host 0.0.0.0 --port 8099
+uvicorn roma_web_search_api.main:app --host 0.0.0.0 --port 8110
 ```
 
 ### 可选：Docker 启动
@@ -206,7 +205,7 @@ script/DOCKER.md
 
 ```bash
 cd ..
-uvicorn web_api.main:app --host 0.0.0.0 --port 8099
+uvicorn web_api.main:app --host 0.0.0.0 --port 8110
 ```
 
 每行一个 key。请求时必须带：
@@ -224,7 +223,7 @@ X-API-Key: <your-key>
 ## 同步调用
 
 ```bash
-curl -X POST "http://127.0.0.1:8099/web-search/v1/chat/completions" \
+curl -X POST "http://127.0.0.1:8110/web-search/v1/chat/completions" \
   -H "Authorization: Bearer sk-your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -246,7 +245,7 @@ curl -X POST "http://127.0.0.1:8099/web-search/v1/chat/completions" \
 from openai import OpenAI
 
 client = OpenAI(
-    base_url="http://127.0.0.1:8099/web-search/v1",
+    base_url="http://127.0.0.1:8110/web-search/v1",
     api_key="sk-your-api-key",
 )
 
@@ -270,7 +269,7 @@ print(resp.choices[0].message.content)
 创建任务：
 
 ```bash
-curl -X POST "http://127.0.0.1:8099/web-search/v1/create_task" \
+curl -X POST "http://127.0.0.1:8110/web-search/v1/create_task" \
   -H "Authorization: Bearer sk-your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -288,7 +287,7 @@ curl -X POST "http://127.0.0.1:8099/web-search/v1/create_task" \
 轮询任务：
 
 ```bash
-curl -G "http://127.0.0.1:8099/web-search/v1/query_task" \
+curl -G "http://127.0.0.1:8110/web-search/v1/query_task" \
   -H "Authorization: Bearer sk-your-api-key" \
   --data-urlencode "task_id=<task-id>"
 ```
@@ -296,7 +295,7 @@ curl -G "http://127.0.0.1:8099/web-search/v1/query_task" \
 也支持：
 
 ```bash
-curl -X POST "http://127.0.0.1:8099/web-search/v1/query_task" \
+curl -X POST "http://127.0.0.1:8110/web-search/v1/query_task" \
   -H "Authorization: Bearer sk-your-api-key" \
   -H "Content-Type: application/json" \
   -d '{"task_id": "<task-id>"}'
@@ -305,7 +304,7 @@ curl -X POST "http://127.0.0.1:8099/web-search/v1/query_task" \
 查询当前 key 的历史记录：
 
 ```bash
-curl -s -G "http://127.0.0.1:8099/web-search/v1/history" \
+curl -s -G "http://127.0.0.1:8110/web-search/v1/history" \
   -H "Authorization: Bearer sk-your-api-key" \
   --data-urlencode "limit=20" \
   --data-urlencode "offset=0" | jq .
