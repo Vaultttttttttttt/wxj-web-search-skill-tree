@@ -98,12 +98,15 @@ class Settings:
 def load_settings() -> Settings:
     project_root = Path(__file__).resolve().parents[1]
     env_file = _load_runtime_env(project_root)
+    # Relative paths from an env file should be interpreted from that file's
+    # directory. This keeps both repo-root .env and script/.env layouts valid.
+    path_base = env_file.parent if env_file else project_root
     roma_src_root = _env_path(
         "ROMA_SRC_ROOT",
         project_root / "vendor" / "ROMA_v2" / "src",
-        project_root,
+        path_base,
     )
-    artifact_dir = _env_path("WEB_API_ARTIFACT_DIR", project_root / "outputs", project_root)
+    artifact_dir = _env_path("WEB_API_ARTIFACT_DIR", project_root / "outputs", path_base)
 
     return Settings(
         project_root=project_root,
@@ -112,29 +115,29 @@ def load_settings() -> Settings:
         skill_root=_env_path(
             "WEB_SEARCH_SKILL_ROOT",
             project_root / "skills" / "web-search-innospark-tree",
-            project_root,
+            path_base,
         ),
         union_search_root=_env_path(
             "WEB_SEARCH_UNION_ROOT",
             project_root / "skills" / "union-search-skill",
-            project_root,
+            path_base,
         ),
         news_aggregator_root=_env_path(
             "WEB_SEARCH_NEWS_AGGREGATOR_ROOT",
             project_root / "skills" / "news-aggregator-skill",
-            project_root,
+            path_base,
         ),
         academic_research_root=_env_path(
             "ACADEMIC_RESEARCH_SKILLS_ROOT",
             project_root / "skills" / "academic-research-skills",
-            project_root,
+            path_base,
         ),
         google_scholar_root=_env_path(
             "GOOGLE_SCHOLAR_SKILLS_ROOT",
             project_root / "skills" / "gs-skills",
-            project_root,
+            path_base,
         ),
-        api_keys_file=_env_path("WEB_API_KEYS_FILE", project_root / "api_keys.txt", project_root),
+        api_keys_file=_env_path("WEB_API_KEYS_FILE", project_root / "api_keys.txt", path_base),
         canonical_prefix=os.getenv("WEB_API_PREFIX", "/web-search/v1"),
         compatibility_prefix=os.getenv("WEB_API_COMPAT_PREFIX", "/deepsearch/v1"),
         default_model=os.getenv("WEB_API_DEFAULT_MODEL", "roma-web-search"),
@@ -148,6 +151,6 @@ def load_settings() -> Settings:
         history_file=_env_path(
             "WEB_API_HISTORY_FILE",
             artifact_dir / "search_history.json",
-            project_root,
+            path_base,
         ),
     )

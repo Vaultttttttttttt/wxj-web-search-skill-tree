@@ -198,6 +198,9 @@ docker run --rm \
   roma-web-search-api
 ```
 
+镜像内置了 `/app/script -> /app` 的兼容链接，所以 `script/.env` 里无论是
+`./outputs` 还是旧的 `./script/outputs` 路径，都能落到同一个挂载目录。
+
 详细说明见 [DOCKER.md](DOCKER.md)。
 
 ### 兼容：旧入口启动

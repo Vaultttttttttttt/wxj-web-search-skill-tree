@@ -4,6 +4,10 @@ This image packages the standalone `script/` backend bundle. Runtime secrets are
 not baked into the image: provide `.env` and `api_keys.txt` when starting the
 container.
 
+The image runs the backend from `/app`. It also creates `/app/script` as a
+compatibility link to `/app`, so both standalone paths such as `./outputs` and
+repository-root paths such as `./script/outputs` work inside Docker.
+
 ## Build
 
 Run from the `web_api` repository root:
@@ -66,5 +70,6 @@ script/outputs/
 - Do not copy real `.env` or `api_keys.txt` into the image.
 - The `.dockerignore` file excludes secrets and historical outputs from the
   build context.
-- The container uses `/app` as the backend root, matching the relative paths in
-  `script/.env.example`.
+- Fresh deployments should copy `script/.env.example` to `script/.env`. If an
+  older `.env` still contains `./script/...` paths, the image keeps those paths
+  compatible through `/app/script`.
