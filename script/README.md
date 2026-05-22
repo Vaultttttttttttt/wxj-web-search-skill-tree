@@ -66,6 +66,12 @@ Equivalent uvicorn command:
 uvicorn roma_web_search_api.main:app --host 0.0.0.0 --port 8110
 ```
 
+## Docker
+
+When building from the repository root, use the root `Dockerfile`. It copies
+this standalone `script/` bundle into `/app` and expects runtime secrets to be
+provided with `--env-file` and mounted files. See `../DOCKER.md`.
+
 ## Check
 
 ```bash

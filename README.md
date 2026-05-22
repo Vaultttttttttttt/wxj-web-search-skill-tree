@@ -178,6 +178,28 @@ cd script
 uvicorn roma_web_search_api.main:app --host 0.0.0.0 --port 8110
 ```
 
+### 可选：Docker 打包启动
+
+如果对接方希望容器化部署，可以从仓库根目录构建镜像：
+
+```bash
+docker build -t roma-web-search-api .
+```
+
+运行时不要把真实 `.env` 和 `api_keys.txt` 打进镜像，使用 `--env-file` 和 volume 挂载：
+
+```bash
+docker run --rm \
+  --name roma-web-search-api \
+  -p 8110:8110 \
+  --env-file script/.env \
+  -v "$PWD/script/api_keys.txt:/app/api_keys.txt:ro" \
+  -v "$PWD/script/outputs:/app/outputs" \
+  roma-web-search-api
+```
+
+详细说明见 [DOCKER.md](DOCKER.md)。
+
 ### 兼容：旧入口启动
 
 旧命令仍然可用：
