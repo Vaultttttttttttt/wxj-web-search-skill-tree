@@ -1,0 +1,336 @@
+ROMA Web Search API - current retrieval source inventory
+Generated for the current web_api codebase.
+
+Important notes
+---------------
+This file lists sources that the current backend code can call or route to.
+Actual availability depends on API keys, network access, provider rate limits,
+and whether the route planner decides that a source is relevant for a request.
+
+The current API default backend is skill_tree, so the usual runtime chain is:
+API request
+-> SkillTreeWebSearchToolkit route planning
+-> web-search-innospark-tree/scripts/global_search_multi.py primary search
+-> union-search-skill/scripts/cli/main.py enrichment when results/providers are insufficient
+-> news-aggregator-skill/scripts/fetch_news.py or RSS fallback for news/trend/source-diversity cases
+-> normalization, deduplication, provider-diversity rebalancing, final Markdown/JSON output
+
+
+1. Primary sources in global_search_multi.py
+-------------------------------------------
+These are registered in:
+script/skills/web-search-innospark-tree/scripts/global_search_multi.py
+
+Default primary sources:
+- tavily
+- bilibili
+- zhihu
+- youtube
+- duckduckgo
+
+All registered primary source adapters:
+- grok: xAI/Grok chat-completions search-style answer, requires GROK_API_KEY or XAI_API_KEY.
+- tavily: Tavily Search API, requires TAVILY_API_KEY.
+- academic_research: composite academic adapter inspired by academic-research-skills; queries scholar, OpenAlex, Crossref, and optionally Semantic Scholar.
+- semantic_scholar: Semantic Scholar Academic Graph paper search; S2_API_KEY is optional but improves rate limits.
+- crossref: Crossref Works API.
+- openalex: OpenAlex Works API.
+- scholar: scholarly search adapter; prefers Serper Scholar via SERPER_API_KEY, then falls back to DuckDuckGo site-restricted scholarly search.
+- bilibili: Bilibili video search via TikHub, requires TIKHUB_TOKEN.
+- zhihu: Zhihu search via union-search-skill zhihu adapter.
+- youtube: YouTube Data API v3, requires YOUTUBE_API_KEY.
+- duckduckgo: DuckDuckGo search via union-search-skill adapter.
+
+
+2. Union-search text/web platforms
+----------------------------------
+These are registered in:
+script/skills/union-search-skill/scripts/union_search/union_search.py
+
+Developer/community sources:
+- github: GitHub repositories, code, and issues.
+- reddit: Reddit posts and subreddits; may be affected by endpoint/IP restrictions.
+
+Social/content platforms:
+- xiaohongshu: Xiaohongshu notes search.
+- douyin: Douyin video search.
+- bilibili: Bilibili video search.
+- youtube: YouTube video search.
+- twitter: Twitter/X post search.
+- weibo: Weibo search.
+- zhihu: Zhihu Q&A/content search.
+- xiaoyuzhoufm: Xiaoyuzhou FM podcast search.
+
+Search engines and web discovery:
+- google: Google search.
+- tavily: Tavily AI search.
+- jina: Jina AI search.
+- duckduckgo: DuckDuckGo search.
+- brave: Brave Search.
+- yahoo: Yahoo search.
+- yandex: Yandex search through SerpAPI.
+- bing: Bing search through SerpAPI.
+- wikipedia: Wikipedia search.
+- metaso: MetaSo/秘塔 AI search.
+- volcengine: Volcengine/Huoshan integrated information search.
+- baidu: Baidu Qianfan search.
+
+RSS:
+- rss: RSS feed search.
+
+Union-search platform groups:
+- dev: github, reddit.
+- social: douyin, bilibili, youtube, twitter, weibo, zhihu, xiaoyuzhoufm.
+- search: google, tavily, jina, duckduckgo, brave, yahoo, yandex, bing, wikipedia, metaso, volcengine, baidu.
+- rss: rss.
+- all: all registered union-search platforms except xiaohongshu.
+
+
+3. Skill-tree route defaults and special source sets
+----------------------------------------------------
+These defaults are configured in:
+script/vendor/ROMA_v2/src/roma_dspy/tools/web_search/skill_tree.py
+
+Default union enrichment platforms:
+- metaso
+- tavily
+- zhihu
+- bilibili
+- twitter
+- youtube
+- wikipedia
+- xiaoyuzhoufm
+- douyin
+- rss
+
+Source-mix enforcement targets for general searches:
+- bilibili
+- youtube
+- wikipedia
+- rss
+
+Source-mix union platforms:
+- wikipedia
+- metaso
+- tavily
+
+Source-mix domain fallback platforms:
+- metaso
+- tavily
+- duckduckgo
+- brave
+
+Academic primary route sources:
+- academic_research
+- tavily
+- semantic_scholar
+- openalex
+- crossref
+- scholar
+- duckduckgo
+
+Academic union route platforms:
+- google
+- tavily
+- brave
+- duckduckgo
+- jina
+- metaso
+- wikipedia
+- rss
+
+Academic domain fallback platforms:
+- google
+- brave
+- duckduckgo
+- tavily
+- jina
+- metaso
+
+Policy primary route sources:
+- tavily
+- academic_research
+- duckduckgo
+
+Policy union route platforms before policy-profile filtering:
+- tavily
+- metaso
+- volcengine
+- wikipedia
+- github
+- zhihu
+- twitter
+- douyin
+- xiaoyuzhoufm
+- bilibili
+- youtube
+
+Policy domain fallback platforms:
+- metaso
+
+Policy/profile note:
+For policy routes, social/video/noisy platforms may be filtered out by the route planner unless explicitly enabled.
+Academic and policy routes also disable general news aggregator and source-mix enforcement by default.
+
+
+4. Academic and policy authoritative domains used for fallback
+-------------------------------------------------------------
+These are not standalone platforms; they are domain targets used when the route
+planner needs more authoritative academic or official-policy material.
+
+Academic authority domains:
+- semanticscholar.org
+- openalex.org
+- crossref.org
+- scholar.google.com
+- doi.org
+- papers.ssrn.com
+- nber.org
+- jstor.org
+- sciencedirect.com
+- springer.com
+- tandfonline.com
+- mdpi.com
+
+Policy/institutional authority domains:
+- gov
+- gov.cn
+- gov.hk
+- gov.mo
+- gov.tw
+- go.jp
+- digital.go.jp
+- go.kr
+- gov.sg
+- gov.uk
+- europa.eu
+- oecd.org
+- worldbank.org
+- un.org
+- itu.int
+- adb.org
+- imf.org
+- nist.gov
+
+China policy/economic/land/tax/governance domains:
+- stats.gov.cn
+- mnr.gov.cn
+- mof.gov.cn
+- chinatax.gov.cn
+- npc.gov.cn
+- samr.gov.cn
+- miit.gov.cn
+- ndrc.gov.cn
+- pbc.gov.cn
+- landchina.com
+
+
+5. News aggregator sources
+--------------------------
+These are registered in:
+script/skills/news-aggregator-skill/scripts/fetch_news.py
+
+General and tech/news sources:
+- hackernews
+- weibo
+- github
+- 36kr
+- v2ex
+- tencent
+- wallstreetcn
+- producthunt
+
+AI and research/news aggregate sources:
+- huggingface
+- ai_newsletters
+- podcasts
+- essays
+- latentspace_ainews
+
+Default general news fallback source set:
+- hackernews
+- github
+- 36kr
+- v2ex
+- tencent
+- wallstreetcn
+- producthunt
+- latentspace_ainews
+
+Default AI-news fallback source set:
+- hackernews
+- github
+- 36kr
+- producthunt
+- huggingface
+- latentspace_ainews
+- ai_newsletters
+
+Dynamic sub-sources:
+- AI newsletter feeds registered inside news-aggregator-skill.
+- podcast feeds registered inside news-aggregator-skill.
+- essay/blog feeds registered inside news-aggregator-skill.
+
+
+6. Google Scholar related skill package
+---------------------------------------
+Directory:
+script/skills/gs-skills
+
+This package is present as a Google Scholar skill set. In the current API path,
+global_search_multi.py loads gs-skills/.env if present, but the active server
+does not normally run the browser/Chrome-DevTools based Google Scholar skills.
+
+Related sources/capabilities:
+- scholar.google.com search pages.
+- scholar.googleusercontent.com BibTeX/export links.
+- cited-by pages in Google Scholar.
+- advanced Google Scholar query construction.
+
+
+7. Image search platforms available through union-search-skill
+-------------------------------------------------------------
+These are registered in:
+script/skills/union-search-skill/scripts/union_image_search/multi_platform_image_search.py
+
+Image search platforms:
+- baidu
+- bing
+- google
+- i360
+- pixabay
+- yandex
+- sogou
+- yahoo
+- unsplash
+- gelbooru
+- safebooru
+- danbooru
+- pexels
+- huaban
+- foodiesfeed
+- volcengine
+
+Current API note:
+The default ROMA Web Search API path is text/web retrieval. Image search is
+available as a union-search-skill capability, but it is not part of the normal
+web-search/v1 text retrieval chain unless a caller or future route explicitly
+invokes it.
+
+
+8. Practical interpretation
+---------------------------
+For a normal broad web request, expect the system to start with Tavily,
+Bilibili, Zhihu, YouTube, and DuckDuckGo, then enrich with MetaSo, Wikipedia,
+RSS, and selected social/search platforms if coverage is weak.
+
+For an academic request, expect Scholar/Serper Scholar, OpenAlex, Crossref,
+Semantic Scholar, Tavily, DuckDuckGo, Google/Brave/Jina/MetaSo/Wikipedia/RSS,
+plus academic authority-domain fallback.
+
+For a policy request, expect Tavily, academic_research, DuckDuckGo, MetaSo,
+Volcengine, Wikipedia, Zhihu, and official/institutional domain fallback, with
+social/video platforms filtered more aggressively by default.
+
+For a news/trend request, expect the general search chain plus news aggregator
+and RSS fallback when provider diversity or result volume is insufficient.

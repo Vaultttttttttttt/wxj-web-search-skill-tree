@@ -39,7 +39,7 @@ if __name__ == "__main__":
         _load_env(env_file)
 
     host = os.getenv("WEB_API_HOST", "0.0.0.0")
-    port = int(os.getenv("WEB_API_PORT", "8099"))
+    port = int(os.getenv("WEB_API_PORT", "8110"))
     reload = os.getenv("WEB_API_RELOAD", "").lower() in {"1", "true", "yes"}
 
     uvicorn.run(

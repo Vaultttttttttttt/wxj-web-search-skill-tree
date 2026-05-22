@@ -1,7 +1,7 @@
 # ROMA Web Search API 接口说明文档
 
 > **服务模型名称**：`roma-web-search`  
-> **默认本地地址**：`http://127.0.0.1:8099`
+> **默认本地地址**：`http://127.0.0.1:8110`
 > **规范接口前缀**：`/web-search/v1`  
 > **兼容接口前缀**：`/deepsearch/v1`  
 > **鉴权方式**：Bearer Token 或 `X-API-Key`
@@ -248,7 +248,7 @@ data: [DONE]
 #### 非流式
 
 ```bash
-curl -X POST "http://127.0.0.1:8099/web-search/v1/chat/completions" \
+curl -X POST "http://127.0.0.1:8110/web-search/v1/chat/completions" \
   -H "Authorization: Bearer sk-your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -267,7 +267,7 @@ curl -X POST "http://127.0.0.1:8099/web-search/v1/chat/completions" \
 #### 流式
 
 ```bash
-curl -N -X POST "http://127.0.0.1:8099/web-search/v1/chat/completions" \
+curl -N -X POST "http://127.0.0.1:8110/web-search/v1/chat/completions" \
   -H "Authorization: Bearer sk-your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -339,7 +339,7 @@ Authorization: Bearer <API_KEY>
 #### GET 方式
 
 ```bash
-curl -G "http://127.0.0.1:8099/web-search/v1/query_task" \
+curl -G "http://127.0.0.1:8110/web-search/v1/query_task" \
   -H "Authorization: Bearer sk-your-api-key" \
   --data-urlencode "task_id=90d0beaf-9f15-4d13-a049-bd1114ed3d59"
 ```
@@ -347,7 +347,7 @@ curl -G "http://127.0.0.1:8099/web-search/v1/query_task" \
 #### POST 方式
 
 ```bash
-curl -X POST "http://127.0.0.1:8099/web-search/v1/query_task" \
+curl -X POST "http://127.0.0.1:8110/web-search/v1/query_task" \
   -H "Authorization: Bearer sk-your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -444,7 +444,7 @@ WEB_API_TASK_TTL_SECONDS
 
 ```bash
 TASK_ID=$(
-  curl -s -X POST "http://127.0.0.1:8099/web-search/v1/create_task" \
+  curl -s -X POST "http://127.0.0.1:8110/web-search/v1/create_task" \
     -H "Authorization: Bearer sk-your-api-key" \
     -H "Content-Type: application/json" \
     -d '{
@@ -459,7 +459,7 @@ TASK_ID=$(
     }' | jq -r '.data.task_id'
 )
 
-curl -s -G "http://127.0.0.1:8099/web-search/v1/query_task" \
+curl -s -G "http://127.0.0.1:8110/web-search/v1/query_task" \
   -H "Authorization: Bearer sk-your-api-key" \
   --data-urlencode "task_id=${TASK_ID}" | jq .
 ```
@@ -551,7 +551,7 @@ script/outputs/search_history.json
 查询当前 API key 产生过的检索记录：
 
 ```bash
-curl -G "http://127.0.0.1:8099/web-search/v1/history" \
+curl -G "http://127.0.0.1:8110/web-search/v1/history" \
   -H "Authorization: Bearer sk-your-api-key" \
   --data-urlencode "limit=20" \
   --data-urlencode "offset=0"
@@ -647,7 +647,7 @@ curl -G "http://127.0.0.1:8099/web-search/v1/history" \
 ```python
 import requests
 
-base_url = "http://127.0.0.1:8099"
+base_url = "http://127.0.0.1:8110"
 headers = {
     "Authorization": "Bearer sk-your-api-key",
     "Content-Type": "application/json",
@@ -683,7 +683,7 @@ print(data["choices"][0]["message"]["content"])
 from openai import OpenAI
 
 client = OpenAI(
-    base_url="http://127.0.0.1:8099/web-search/v1",
+    base_url="http://127.0.0.1:8110/web-search/v1",
     api_key="sk-your-api-key",
 )
 
@@ -753,53 +753,8 @@ python run_server.py
 也可以直接使用：
 
 ```bash
-uvicorn roma_web_search_api.main:app --host 0.0.0.0 --port 8099
+uvicorn roma_web_search_api.main:app --host 0.0.0.0 --port 8110
 ```
-
-### 可选 Docker 部署
-
-Docker 不是当前 Web Search API 的必需依赖。默认部署不需要 Redis、PostgreSQL、RAGFlow 或其他 sidecar 容器；Docker 只用于打包 Python 运行环境。
-
-`script/` 下已经提供：
-
-```text
-Dockerfile
-docker-compose.yml
-.dockerignore
-DOCKER.md
-```
-
-在服务器上：
-
-```bash
-cd roma-web-search
-cp .env.example .env
-cp api_keys.example.txt api_keys.txt
-mkdir -p outputs
-docker compose up -d --build
-```
-
-检查：
-
-```bash
-curl -s http://127.0.0.1:8099/healthz | jq .
-```
-
-若采用 Docker，容器内路径通常是：
-
-```text
-/app/outputs/search_history.json
-/app/api_keys.txt
-```
-
-宿主机对应：
-
-```text
-script/outputs/search_history.json
-script/api_keys.txt
-```
-
-完整 Docker 注意事项见 `script/DOCKER.md`。
 
 ### 必要环境变量
 
@@ -824,7 +779,7 @@ script/api_keys.txt
 启动后可检查：
 
 ```bash
-curl -s http://127.0.0.1:8099/healthz | jq .
+curl -s http://127.0.0.1:8110/healthz | jq .
 ```
 
 确认 `config_env_file`、`package_root`、`roma_src_root`、`skill_root`、`union_search_root`、`news_aggregator_root` 都指向预期位置。
